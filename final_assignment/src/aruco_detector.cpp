@@ -41,14 +41,14 @@ int main(int argc, char** argv)
     defaultCameraParams = aruco::CameraParameters();
   
     // Creating a Subscriber for the image topic
-    imageSub = n.subscribe("/camera1/camera1/image_raw", 1000, imageCallback);
+    imageSub = n.subscribe("/camera1/image_raw", 1000, imageCallback);
     // Creating Publishers for the robot arm
-    j0Pub = n.advertise<std_msgs::Float64>("/joint0_position_controller/command", 10);
-    j1Pub = n.advertise<std_msgs::Float64>("/joint1_position_controller/command", 10);
-    j2Pub = n.advertise<std_msgs::Float64>("/camera_position_controller/command", 10);
+    j0Pub = n.advertise<std_msgs::Float64>("/joint0_position_controller/command", 1000);
+    j1Pub = n.advertise<std_msgs::Float64>("/joint1_position_controller/command", 1000);
+    j2Pub = n.advertise<std_msgs::Float64>("/camera_position_controller/command", 1000);
     mapPub = n.advertise<final_assignment::OntologyMap>("/ontology_map/build_map", 10);
     // Creating a Publisher for the robot velocity
-    velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 10, true);
+    velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
     // Creating a ServiceClient for the rooms information
     roomInfoPub = n.serviceClient<final_assignment::RoomInformation>("/room_info");
     
