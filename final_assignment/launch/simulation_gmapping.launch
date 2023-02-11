@@ -15,7 +15,7 @@
   <arg name="respawn_gazebo" default="false"/>
   <arg name="use_clock_frequency" default="false"/>
   <arg name="pub_clock_frequency" default="100"/>
-  <arg name="model" default="$(find final_assignment)/urdf/robot.xacro" />
+  <arg name="model" default="$(find final_assignment)/urdf/robot_assignment.xacro" />
 
   <!-- Setting use_sim_time flag -->
   <param name="/use_sim_time" value="$(arg use_sim_time)"/>
@@ -64,9 +64,9 @@
   <!-- Launching the ROS Controller for the arm joints -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen" args="
 	joint_state_controller
-	joint0_position_controller
 	joint1_position_controller
-	camera_position_controller
+	joint2_position_controller
+	joint3_position_controller
 	--shutdown-timeout 3">
   </node>
 	
