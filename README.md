@@ -118,7 +118,7 @@ The remaining nodes of the architecture are explained in the <b>[README](https:/
 A more detailed explanation of the use of the interfaces is available <b>[here](#ros-messages-services-and-actions)</b>.  
 
 ### Sequence Diagram
-This <b>sequence diagram</b> shows a possible execution of the software contained in this repository. More in details, this diagram shows the execution in time of all the nodes and the requests/responses between them.
+This <b>sequence diagram</b> shows a possible execution of the software contained in this repository. More in details, this diagram shows the execution in time of all the nodes and the requests/responses between them.  
 Notice that this diagram only shows the beginning of the execution, ence, the detection of the ArUco markers and the building of the ontology. That is because the remaining part of the diagram is the same shown in the <b>[README](https://github.com/IlMusu/Exproblab_Assignment_1)</b> of the previous assignment.
 
 <p align="center">
@@ -134,6 +134,26 @@ The second horizonal line shows the end of this sequence diagram and the begin o
 
 ## 4. RUNNING CODE
 ### Detecting The Markers
-### Performing The Surveillance Task
+<p align="center">
+<img src="https://github.com/IlMusu/Exproblab_Assignment_2/blob/documentation/gifs/markers_detection.gif?raw=true">
+</p>
+
+In this first gif it is possible to observe how the robot is able to detect the ArUco markers around it self: the arm is composed by a rotational joint connected the main chassis which controls the yaw of the arm, and another rotational joint which controls the pitch of the camera.  
+The robot performs yaw rotations of the arm from -π to π at different camera pitches.  
+It is supposed that the number of placed ArUco markers is known a priori: the robot continues to perform these rotations, which are referred to as <b>"robot inspection routines"</b> until, all the markers are located correctly. 
+
+In fact, it may happen that a marker is not detected correctly and a wrong id is obtained: the robot simply discards the value and continues to scan the environment. This behavior can be observed at the end of the gif when the markers 143 and 148 are discarded.
+
+### Moving In The Environment
+<p align="center">
+<img src="https://github.com/IlMusu/Exproblab_Assignment_2/blob/documentation/gifs/moving_in_the_environment.gif?raw=true">
+</p>
+
+In this second gif instead, it is possible to observe that, after all the markers have been correctly detected, the robot starts to move in the environment following the behaviour described in the previous assignment.
 
 ## 5. FUTURE WORK
+These are some of the possible improvements that can be carried on this project:
+   - The `armor_service` library through the <b>/armor_interface_srv</b> service.  
+   - The `marker_detector` node through the <b>/ontology_map/build_map</b> action.
+   - The `robot_behavior` node through the <b>/ontology_map/reference_name</b> service.  
+   - The `robot_behavior` node through the <b>/ontology_map/room_position</b> service.  
