@@ -3,6 +3,7 @@
 # Importing ROS library for python
 import rospy
 import actionlib
+
 from robot_state_msgs.msg import ComputePathAction, ComputePathResult
 from geometry_msgs.msg import Point
 
@@ -29,7 +30,7 @@ class PlannerController():
         # Logging some information
         gx = str(action.goal.x)
         gy = str(action.goal.y)
-        rospy.loginfo("Computed a plan to (x:"+gx+",y:"+gy+")!");
+        rospy.loginfo("[PLANNER] Computed a plan to (x:"+gx+",y:"+gy+")!");
         # Responding with the new plan.
         self._planner_asv.set_succeeded(result)
 

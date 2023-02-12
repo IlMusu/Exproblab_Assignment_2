@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <launch>
-  <!-- This launch file arguments -->
+  <!-- PARAMETERS FOR THE SIMULATION -->
+  
   <arg name="paused" default="false"/>
   <arg name="use_sim_time" default="true"/>
   <arg name="extra_gazebo_args" default=""/>
@@ -15,7 +16,7 @@
   <arg name="respawn_gazebo" default="false"/>
   <arg name="use_clock_frequency" default="false"/>
   <arg name="pub_clock_frequency" default="100"/>
-  <arg name="model" default="$(find final_assignment)/urdf/robot_assignment.xacro" />
+  <arg name="model" default="$(find final_assignment)/urdf/robot.xacro" />
 
   <!-- Setting use_sim_time flag -->
   <param name="/use_sim_time" value="$(arg use_sim_time)"/>
@@ -29,15 +30,22 @@
   <arg     if="$(arg verbose)" name="command_arg3" value="--verbose"/>
   <arg unless="$(arg debug)" name="script_type" value="gzserver"/>
   <arg     if="$(arg debug)" name="script_type" value="debug"/>
-	
-  <!-- Loading the URDF into the ROS Parameter Server -->
-  <param name="robot_description"   command="$(find xacro)/xacro --inorder $(arg model)" />
   
-  <!-- Loading motors configuration into the ROS Parameter Server -->
+  
+  
+  <!-- LOADING CONFIGURATIONS -->
+	
+  <!-- Loading Robot URDF into the ROS Paramter Server -->
+  <param name="robot_description" command="$(find xacro)/xacro --inorder $(arg model)" />
+  
+  <!-- Loading motors config into the ROS Paramter Server -->
   <rosparam file="$(find final_assignment)/config/motors_config.yaml" command="load" />
   
+  
+  
+  <!-- LAUNCHING NODES -->
 
-  <!-- Launching Gazebo server-->
+  <!-- Launching Gazebo Server -->
   <group if="$(arg use_clock_frequency)">
     <param name="gazebo/pub_clock_frequency" value="$(arg pub_clock_frequency)" />
   </group>
@@ -45,7 +53,7 @@
 	args="$(arg command_arg1) $(arg command_arg2) $(arg command_arg3) -e $(arg physics) $(arg extra_gazebo_args) $(arg world_name)" 
   />
 	
-  <!-- Launching Gazebo client -->
+  <!-- Launching Gazebo Client -->
   <group if="$(arg gui)">
     <node name="gazebo_gui" pkg="gazebo_ros" type="gzclient" respawn="false" output="screen"/>
   </group>
@@ -58,19 +66,19 @@
 
   <!-- Launching node to make a service call to gazebo_ros to spawn a URDF robot -->
   <node name="urdf_spawner" pkg="gazebo_ros" type="spawn_model" respawn="false" output="screen"
-	args="-urdf -model robot1 -param robot_description -x -6.0 -y 11.0 -z 0.05"
+	args="-urdf -model robot1 -param robot_description -x -6.0 -y 11.0 -z 0.05 -Y 3.14"
   /> 
   
-  <!-- Launching the ROS Controller for the arm joints -->
+  <!-- Launching ROS Controller for the arm joints -->
   <node name="controller_spawner" pkg="controller_manager" type="spawner" output="screen" args="
 	joint_state_controller
+	joint0_position_controller
 	joint1_position_controller
-	joint2_position_controller
-	joint3_position_controller
+	camera_position_controller
 	--shutdown-timeout 3">
   </node>
 	
-  <!-- Launching the GMapping node for localization and mapping -->
+  <!-- Launching GMapping node for localization and mapping -->
   <param name="use_sim_time" value="true"/>
   <node pkg="gmapping" type="slam_gmapping" name="slam_gmapping">
 	<param name="base_frame" value="link_chassis"/>
@@ -103,6 +111,16 @@
     <param name="lasamplerange" value="0.005"/>
     <param name="lasamplestep" value="0.005"/>
     <param name="transform_publish_period" value="0.0005"/>
+  </node>
+  
+  <!-- Launching move_base node for robto movement -->
+  <node pkg="move_base" type="move_base" respawn="false" name="move_base" output="screen">
+    <rosparam file="$(find final_assignment)/param/costmap_common_params.yaml" command="load" ns="global_costmap"/>
+    <rosparam file="$(find final_assignment)/param/costmap_common_params.yaml" command="load" ns="local_costmap"/>
+    <rosparam file="$(find final_assignment)/param/local_costmap_params.yaml" command="load"/>
+    <rosparam file="$(find final_assignment)/param/global_costmap_params.yaml" command="load"/>
+    <rosparam file="$(find final_assignment)/param/base_local_planner_params.yaml" command="load"/>
+    <rosparam file="$(find final_assignment)/param/move_base_params.yaml" command="load"/>
   </node>
 
 </launch>

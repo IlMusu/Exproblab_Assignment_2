@@ -82,9 +82,9 @@ class OntologyMapBuilder(object):
         rooms_positions = ast.literal_eval(rospy.get_param('~rooms_positions', 'None'))
         # Logging informations about the parametes
         if rooms == None or rooms_doors == None or rooms_positions == None :
-            rospy.loginfo("Map was not found in parameters, waiting for message!")
+            rospy.loginfo("[BUILDER] Map was not found in parameters, waiting for message!")
             return
-        rospy.loginfo("Found map from parameters!")
+        rospy.loginfo("[BUILDER] Found map from parameters!")
         # The rooms is already a list of strings
         # The rooms_doors is already a list of list of strings
         # The rooms_positions need to be parsed to a list of Point
@@ -112,17 +112,17 @@ class OntologyMapBuilder(object):
         onto_uri = rospy.get_param('~ontology_uri')
         robot_room = rospy.get_param('~robot_room', 'E')
         # Loading the default ontology into ARMOR
-        rospy.loginfo("The base ontology is located at: "+onto_path)
-        rospy.loginfo("Loading base ontology with uri: "+onto_uri)
+        rospy.loginfo("[BUILDER] The base ontology is located at: "+onto_path)
+        rospy.loginfo("[BUILDER] Loading base ontology with uri: "+onto_uri)
         self._onto_utils.load_ref_from_file(onto_path, onto_uri, True)
         # Starting to create map
-        rospy.loginfo("Starting to build map.")
+        rospy.loginfo("[BUILDER] Starting to build map.")
         for [room, doors] in zip(rooms, rooms_doors) :
             # Adding rooms with all the related doors
             for door in doors :
                 print(room, type(room), door, type(door))
                 self._onto_manip.add_objectprop_to_ind('hasDoor', room, door)
-                rospy.loginfo("Added door "+door+" to room "+room+".")
+                rospy.loginfo("[BUILDER] Added door "+door+" to room "+room+".")
             # Setting room properties to initial values
             self._onto_manip.add_dataprop_to_ind('visitedAt', room, 'Long', '0')
         # Disjoint between all the rooms
@@ -131,13 +131,13 @@ class OntologyMapBuilder(object):
         self._onto_manip.disj_inds_of_class('DOOR')
         # Positioning robot to specified room
         self._onto_manip.add_objectprop_to_ind('isIn', 'Robot1', robot_room)
-        rospy.loginfo("Positioned robot in room "+robot_room+".")
-        rospy.loginfo("Finished building map.")
+        rospy.loginfo("[BUILDER] Positioned robot in room "+robot_room+".")
+        rospy.loginfo("[BUILDER] Finished building map.")
         # Organizing room positions
         self._rooms_positions = {}
         for [room, pos] in zip(rooms, rooms_positions):
             self._rooms_positions[room] = pos
-        rospy.loginfo("Finished organizing rooms positions.")
+        rospy.loginfo("[BUILDER] Finished organizing rooms positions.")
         # The building is now complete
         self._building_complete = True
         self._building_complete_event.set()

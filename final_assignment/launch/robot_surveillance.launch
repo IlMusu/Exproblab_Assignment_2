@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Launching the MarkerServer for retrieving information about Aruco markers -->
+    <node pkg="final_assignment" name="marker_server"  type="marker_server" output="screen" />
+    
+    <!-- Launching node for performing InspectionsRoutine with the arm -->
+    <node pkg="final_assignment" name="robot_inspection_routine"  type="robot_inspection_routine.py" output="screen" />
+    
+    <!-- Launching node for decting markers -->
+    <node pkg="final_assignment" name="marker_detector" type="marker_detector" output="screen" />
+    
+    <!-- Launching node for planning -->
+    <node pkg="final_assignment" name="planner_controller" type="planner_controller.py" output="screen" />
+    
+    <!-- Launching node for following a path -->
+    <node pkg="final_assignment" name="motion_controller" type="motion_controller.py" output="screen" />
+    
+    <!-- Launching node for the surveillance behavior -->
+    <include file="$(find robot_behavior)/launch/robot_surveillance.launch" />
+
+</launch>

@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<launch>
+
+    <!-- Lauching ARMOR Node to use ontology -->
+    <node pkg="armor" type="execute" name="armor_service" args="it.emarolab.armor.ARMORMainService"/>
+    
+    <!-- Launching utility node for building the ontology -->
+    <include file="$(find final_assignment)/launch/ontology_builder_empty.launch" />
+
+</launch>

@@ -24,12 +24,12 @@ class MotionController():
         self._move_acl = actionlib.SimpleActionClient(
             "move_base", MoveBaseAction
         )
-        # Defining an ActionServer for receving a path.
+        # Creating an ActionServer for receving a path.
         self._follow_asv = actionlib.SimpleActionServer(
             '/follow_path', FollowPathAction, auto_start=False,
             execute_cb=self._follow_path,
         )
-        # Defining a Subscriber to the odom topic for the move_base threshold
+        # Creating a Subscriber to the odom topic for the move_base threshold
         self._odom_sub = rospy.Subscriber(
             '/odom', Odometry, queue_size=10,
             callback = self._on_odom_callback
@@ -55,14 +55,14 @@ class MotionController():
             goal.target_pose.pose.orientation.w = 1
             goal.target_pose.pose.position.x = pose.x
             goal.target_pose.pose.position.y = pose.y
-            rospy.loginfo("Moving to (x:"+str(pose.x)+", y:"+str(pose.y)+")!");
+            rospy.loginfo("[MOVER] Moving to (x:"+str(pose.x)+", y:"+str(pose.y)+")!");
             
             # Sending the goal to the move_base server.
             self._move_acl.send_goal(goal)
             
             # Manually checking if the robot is arrived at position
-            rate = rospy.Rate(2)
-            threshold = 10
+            rate = rospy.Rate(1)
+            threshold = 10000
             while threshold > 1.0:
                 # Check if the position is marked as reached by the move_base
                 # action server. In this case the robot would not move anymore.
@@ -70,7 +70,7 @@ class MotionController():
                     break
                 rate.sleep()
                 threshold = self._compute_robot_distance(pose)
-                rospy.loginfo("New threshold is "+str(threshold))
+                rospy.loginfo("[MOVER] New threshold is "+str(threshold))
                 
             # Canceling the goal if not completed, that is because the treshold
             # has already been reached.
@@ -84,6 +84,8 @@ class MotionController():
         
         # Publishing the final result
         result = FollowPathResult()
+        result.position.x = self._robot_position.x
+        result.position.y = self._robot_position.y
         if not has_failed:
             self._follow_asv.set_succeeded(result)
         else:

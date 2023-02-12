@@ -1,4 +1,6 @@
 ## MESSAGE
+# This message contains all the necessary information to
+# build the ontology map.
 
 # The list of rooms names inside the map
 string[] rooms

@@ -1,46 +1,35 @@
 #include <ros/ros.h>
 #include <aruco/aruco.h>
 #include <cv_bridge/cv_bridge.h>
-#include <iostream>
+#include <actionlib/client/simple_action_client.h>
 
 #include <sensor_msgs/Image.h>
-#include <std_msgs/Float64.h>
-#include <std_msgs/String.h>
 #include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Point.h>
 #include <final_assignment/RoomInformation.h>
 #include <final_assignment/RoomConnection.h>
 #include <final_assignment/RoomDoors.h>
 #include <final_assignment/OntologyMap.h>
-#include <geometry_msgs/Point.h>
+#include <final_assignment/RobotInspectionRoutineAction.h>
 
 aruco::CameraParameters defaultCameraParams;
 std::set<int> detectedMarkers;
+std::set<int> validatedMarkers;
 final_assignment::OntologyMap ontoMapMsg;
 
 ros::ServiceClient roomInfoSrv;
 ros::Subscriber imageSub;
 ros::Publisher ontoMapPub;
 ros::Publisher velPub;
-ros::Publisher joint1Pub;
-ros::Publisher joint2Pub;
-ros::Publisher joint3Pub;
 
-void resetArmPosition();
 bool retrieveRoomsInformation();
-void rotateArmAroundInSteps();
 void imageCallback(const sensor_msgs::Image::ConstPtr& msg);
-
-
-template <typename T> int sign(T val) 
-{
-    return (T(0) < val) - (val < T(0));
-}
     
     
 int main(int argc, char **argv)
 {
     // Initializing the ROS Node
-    ros::init(argc, argv, "aruco_detector");
+    ros::init(argc, argv, "marker_detector");
     ros::NodeHandle n;
 
     // Initializing variables
@@ -50,29 +39,63 @@ int main(int argc, char **argv)
     imageSub = n.subscribe("/camera/image_raw", 100, imageCallback);
     // Creating a Publisher for the robot velocity
     velPub = n.advertise<geometry_msgs::Twist>("/cmd_vel", 1000, true);
-    // Creating Publishers for the robot arm
-    joint1Pub = n.advertise<std_msgs::Float64>("/joint1_position_controller/command", 1000, true);
-    joint2Pub = n.advertise<std_msgs::Float64>("/joint2_position_controller/command", 1000, true);
-    joint3Pub = n.advertise<std_msgs::Float64>("/joint3_position_controller/command", 1000, true);
     // Creating a Publisher for the ontology map
     ontoMapPub = n.advertise<final_assignment::OntologyMap>("/ontology_map/build_map", 100, true);
     // Creating a ServiceClient for the rooms information
     roomInfoSrv = n.serviceClient<final_assignment::RoomInformation>("/room_info");
     
-    // Resetting the arm position
-    resetArmPosition();
+    // Creatin a ActionClient for moving the robot arm aroung
+    // True causes the client to spin its own thread
+    actionlib::SimpleActionClient<final_assignment::RobotInspectionRoutineAction> armAcl("robot_inspection_routine", true);
     
-    // Rotating the arm around to search for aruco markers
-    while(detectedMarkers.size() < 7)
+    ROS_INFO("[MARKER DETECTOR] Waiting for InspectionRoutine Server...");
+    armAcl.waitForServer();
+    ROS_INFO("[MARKER DETECTOR] InspectionRoutine Server found!");
+    ROS_INFO("[MARKER DETECTOR] Waiting for MarkerServer Service...");
+    roomInfoSrv.waitForExistence();
+    ROS_INFO("[MARKER DETECTOR] MarkerServer Service found!");
+    
+    // Setting the robot velocity very small in order to keep it still
+    geometry_msgs::Twist velMsg;
+    velMsg.linear.x = 0.001;
+    velPub.publish(velMsg);
+     
+    // Finding all the markers in the room
+    do
     {
-        rotateArmAroundInSteps();
-        ROS_INFO("Found %li markers!", detectedMarkers.size());
-    }
+        // Creating the goal for the movement of the arm
+        final_assignment::RobotInspectionRoutineGoal goal;
+        armAcl.sendGoal(goal);
     
-    // Resetting the arm position after rotating
-    resetArmPosition();
-    // Retrieving all the rooms information
-    retrieveRoomsInformation();
+        // Waiting for the arm movement to complete
+        // In the meanwhile, handle callbacks
+        ros::Rate rate(10); // 10 hz
+        while(!armAcl.getState().isDone())
+        {
+            ros::spinOnce();
+            rate.sleep();
+        }
+        
+        // If the InspectionRoutine was not executed successfully,
+        // wait for a bit and then retry
+        if(!armAcl.getResult()->completed)
+        {
+            ROS_INFO("[MARKER DETECTOR] Inspection routine was not executed!");
+            ROS_INFO("[MARKER DETECTOR] Waiting for a bit and then retrying!");
+            ros::Duration(10).sleep();
+            continue;
+        }
+        
+        // Retrieving all the rooms information
+        retrieveRoomsInformation();
+        ROS_INFO("[MARKER DETECTOR] Validated '%li' markers!", validatedMarkers.size());
+        
+    }
+    while(validatedMarkers.size() < 7);
+    
+    // Stopping the now unnecessary subscriber for the camera image
+    imageSub.shutdown();
+    
     // Publishin the ontology map
     ontoMapPub.publish(ontoMapMsg);
     
@@ -80,66 +103,6 @@ int main(int argc, char **argv)
     ros::spin();
 
     return 0;
-}
-
-
-void resetArmPosition()
-{
-    // Creating the message for comunicating with the whole arm
-    std_msgs::Float64 armMsg;
-    armMsg.data = 0.0;
-    // Resetting the arm position
-    joint1Pub.publish(armMsg);
-    joint2Pub.publish(armMsg);
-    joint3Pub.publish(armMsg);
-}
-
-
-void rotateArmAroundInSteps()
-{
-    // Setting the robot velocity very small in order to keep it still
-    geometry_msgs::Twist velMsg;
-    velMsg.linear.x = 0.001;
-    velPub.publish(velMsg);
-    
-    // Logging
-    ROS_INFO("Starting to rotate the arm!");
-    
-    // Creating the message for comunicating with the whole arm
-    std_msgs::Float64 armMsg;
-    
-    // Handling the yaw rotation in a smarter yaw
-    float yaw = -3.10F;
-    float targetYaw = 3.10F;
-    float deltaYaw = 0.1F;
-    
-    // Actually starting to rotate the arm
-    ros::Rate updateRate(5);    
-    for(float pitch = 0.4F; pitch >= -0.6F; pitch -= 0.5F)
-    {
-        // Rotating the camera pitch
-        armMsg.data = pitch;
-        joint3Pub.publish(armMsg);
-        ROS_INFO("Setting new pitch: %f", pitch);
-        
-        float deltaYawSign = sign(deltaYaw);
-        while(yaw*deltaYawSign < targetYaw*deltaYawSign)
-        {
-            // Rotating the camera yaw
-            armMsg.data = yaw;
-            joint1Pub.publish(armMsg);
-            ROS_INFO("Setting new yaw: %f .", yaw);
-            
-            ros::spinOnce();
-            updateRate.sleep();
-            
-            yaw += deltaYaw;
-        }
-        
-        // Inverting the target yaw and delta
-        targetYaw *= -1;
-        deltaYaw *= -1;
-    }
 }
 
 
@@ -155,16 +118,21 @@ void imageCallback(const sensor_msgs::Image::ConstPtr& msg)
     // Detecting ARUCO markers in the image
     detector.detect(cvPtr->image, markers, defaultCameraParams, 0.05, false);
     
-    // Check if a new aruco ID was detected
+    // Check if a new marker id was detected
     std::pair<std::set<int>::iterator,bool> ret;
     for (std::size_t i = 0; i < markers.size(); ++i)
-    {
+    {        
         int id = markers.at(i).id;
-        ret = detectedMarkers.insert(id);
-        if(!ret.second)
+        // Check if the marker was already validated
+        if(validatedMarkers.find(id) != validatedMarkers.end())
             continue;
+        // Check if marker was already detected
+        if(detectedMarkers.find(id) != detectedMarkers.end())
+            continue;
+        
         // A new marker has been found
-        ROS_INFO("New marker with id '%i' detected!", id);
+        detectedMarkers.insert(id);
+        ROS_INFO("[MARKER DETECTOR] New marker with id '%i' detected!", id);
     }
 }
 
@@ -174,11 +142,19 @@ bool retrieveRoomsInformation()
     final_assignment::RoomInformation info;
     for(int markerID : detectedMarkers)
     {
-        ROS_INFO("Requesting info for ID %i", markerID);
+        ROS_INFO("[MARKER DETECTOR] Requesting info for ID %i", markerID);
         // Requesting information to the room info service
         info.request.id = markerID;
         if(!roomInfoSrv.call(info))
             return false;
+            
+        // Check if the detected marker is valid
+        if(info.response.room == "no room associated with this marker id")
+        {
+            ROS_INFO("[MARKER DETECTOR] Detected invalid ID %i, ignoring", markerID);
+            continue;
+        }
+        
         // Storing the room name
         ontoMapMsg.rooms.push_back(info.response.room);
         // Storing the room positions
@@ -191,7 +167,13 @@ bool retrieveRoomsInformation()
         for(final_assignment::RoomConnection conn : info.response.connections)
             roomDoors.doors.push_back(conn.through_door);
         ontoMapMsg.doors.push_back(roomDoors);
+        
+        // The marker has been parsed as valid
+        validatedMarkers.insert(markerID);
     }
+    
+    // The detected markers have been handled
+    detectedMarkers.clear();
     
     return true;
 }
