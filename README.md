@@ -1,5 +1,5 @@
 # EXPROBLAB - ASSIGNMENT 2
-Author : Mattia Musumeci 4670261@studenti.unige.it  
+Author : Mattia Musumeci 4670261@studenti.unige.it
 This is the second assignment developed for the <b>Experimental Robotics Laboratory</b> course of the University of Genoa.  
 At this <b>[link](https://ilmusu.github.io/Exproblab_Assignment_1/)</b> it is possible to find the documentation for the software contained in this repository.
 
@@ -21,6 +21,28 @@ The <b>ArUco Markers</B> which are synthetic square markers that are made up of 
 
 For detecting the markers, the <b>[OpenCV](https://opencv.org/)</b> library has been used.
 The <b>Open Source Computer Vision (OpenCV)</b> library is a free and open-source computer vision and machine learning software library. It is aimed at real-time computer vision and has a comprehensive set of algorithms for tasks such as image processing, object detection, and recognition, video analysis, and machine learning.
+
+### Environment
+In the following it shown an image of the environment the robot is placed in.
+<center>
+	<img src="https://i.imgur.com/yVivSbS.png" width="80%">
+</center>
+
+### Robot
+The robot used in the simulation is a differential robot equipped with a simple robotic arm with only two joints, a camera placed at the end-effector and a laser scanner. The following image shows the rendering of robot.
+<center>
+	<img src="https://i.imgur.com/dq6hsQy.jpg" width="80%">
+</center>
+
+### Markers
+In the following images are shown the types and placement of the markers that have been used in the simulation: as can be seen, all the markers are in the same location. The robot will be spawned at the center of that location so that it can identify all the markers by just controlling the joints of the robotic arm.
+<center>
+	<img src="https://i.imgur.com/aR28QNP.jpg" width="80%">
+</center>
+Another image of the same location from a different perspective:
+<center>
+	<img src="https://i.imgur.com/asekuqh.jpg" width="80%">
+</center>
 
 ## 2. INSTALLATION AND RUNNING
 ### Installation
