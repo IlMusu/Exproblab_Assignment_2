@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts.robot_inspection_routine &mdash; exprob_assignment_2  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            exprob_assignment_2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">exprob_assignment_2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scripts.robot_inspection_routine</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scripts.robot_inspection_routine</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Importing ROS library for python</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">import</span> <span class="nn">actionlib</span>
+
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">copysign</span>
+
+<span class="kn">from</span> <span class="nn">std_msgs.msg</span> <span class="kn">import</span> <span class="n">Float64</span>
+<span class="kn">from</span> <span class="nn">final_assignment.msg</span> <span class="kn">import</span> <span class="n">RobotInspectionRoutineAction</span><span class="p">,</span> <span class="n">RobotInspectionRoutineResult</span>
+
+<div class="viewcode-block" id="RobotInspectionRoutine"><a class="viewcode-back" href="../../index.html#scripts.robot_inspection_routine.RobotInspectionRoutine">[docs]</a><span class="k">class</span> <span class="nc">RobotInspectionRoutine</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Publishes to the topics:</span>
+<span class="sd">        - /joint0_position_controller/command (Float64)</span>
+<span class="sd">        - /joint1_position_controller/command (Float64)</span>
+<span class="sd">        - /camera_position_controller/command (Float64)</span>
+<span class="sd">    Creates an action server for:</span>
+<span class="sd">        - /robot_inspection_routine (RobotInspectionRoutineAction)</span>
+<span class="sd">    </span>
+<span class="sd">    This ROS Node makes the arm of the robot rotate in circular patters.</span>
+<span class="sd">    This behavior is achieved by subscribing to the topics of each joint</span>
+<span class="sd">    of the arm and manually setting the angle values.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="RobotInspectionRoutine.__init__"><a class="viewcode-back" href="../../index.html#scripts.robot_inspection_routine.RobotInspectionRoutine.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        |  In the constructor method, this class:</span>
+<span class="sd">        |  1. Creates a subscriber for the &quot;/joint0_position_controller/command&quot; topic.</span>
+<span class="sd">        |  2. Creates a subscriber for the &quot;/joint1_position_controller/command&quot; topic.</span>
+<span class="sd">        |  3. Creates a subscriber for the &quot;/camera_position_controller/command&quot; topic.</span>
+<span class="sd">        |  4. Creates an action server for the &quot;/robot_inspection_routine&quot; action.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;robot_inspection_routine&#39;</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">rospy</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="c1"># Initializing variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_inspecting</span> <span class="o">=</span> <span class="kc">False</span>
+        
+        <span class="c1"># Publishers for the arm joits</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span>
+            <span class="s1">&#39;/joint0_position_controller/command&#39;</span><span class="p">,</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joint1_pub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span>
+            <span class="s1">&#39;/joint1_position_controller/command&#39;</span><span class="p">,</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span>
+            <span class="s1">&#39;/camera_position_controller/command&#39;</span><span class="p">,</span> <span class="n">Float64</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1</span>
+        <span class="p">)</span>
+        
+        <span class="c1"># Action server for starting the inspection routine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_routine_asv</span> <span class="o">=</span> <span class="n">actionlib</span><span class="o">.</span><span class="n">SimpleActionServer</span><span class="p">(</span>
+            <span class="s1">&#39;/robot_inspection_routine&#39;</span><span class="p">,</span> <span class="n">RobotInspectionRoutineAction</span><span class="p">,</span> <span class="n">auto_start</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">execute_cb</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_on_inspection_request</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_routine_asv</span><span class="o">.</span><span class="n">start</span><span class="p">()</span></div>
+    
+    
+<div class="viewcode-block" id="RobotInspectionRoutine._on_inspection_request"><a class="viewcode-back" href="../../index.html#scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request">[docs]</a>    <span class="k">def</span> <span class="nf">_on_inspection_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            action (RobotInspectionRoutineGoal) : the goal.</span>
+<span class="sd">        </span>
+<span class="sd">        | This is the callback for the /robot_inspection_routine action server:</span>
+<span class="sd">        | 1. If the routine is already taking place:</span>
+<span class="sd">        |  2. Sends the result as failed.</span>
+<span class="sd">        | 2. Makes the first joint rotate to -pi.</span>
+<span class="sd">        | 3. Makes the camera joint to 0.3.</span>
+<span class="sd">        | 4. Makes the first joint rotate to pi.</span>
+<span class="sd">        | 5. Makes the camera rotate to -0.8.</span>
+<span class="sd">        | 6. Makes the first joint rotate to -pi.</span>
+<span class="sd">        | 7. Resets the joint positions.</span>
+<span class="sd">        | 8. Sends the result as success.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Check if the robot is already inspecting</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_inspecting</span> <span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;[INSPECTION ROUTINE] Robot is already inspecting!&quot;</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">RobotInspectionRoutineResult</span><span class="p">()</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">completed</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_routine_asv</span><span class="o">.</span><span class="n">set_aborted</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># Starting a new inspection routine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_inspecting</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[INSPECTION ROUTINE] Starting a new inspection routine!&quot;</span><span class="p">)</span>
+        <span class="c1"># Initially setting the rotation all to one side</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint1_pub</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">)</span>
+        <span class="c1"># Rotate camera down and 360 deg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">)</span>
+        <span class="c1"># Rotate camera a little up and -360 deg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.8</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span><span class="p">,</span> <span class="mf">0.03</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">)</span>
+        <span class="c1"># Returning to the initial position</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+        
+        <span class="c1"># Publishing the result</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">RobotInspectionRoutineResult</span><span class="p">()</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">completed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_routine_asv</span><span class="o">.</span><span class="n">set_succeeded</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[INSPECTION ROUTINE] Inspection routine completed!&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_inspecting</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+    
+<div class="viewcode-block" id="RobotInspectionRoutine._rotate_arm_joint_smoothly"><a class="viewcode-back" href="../../index.html#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly">[docs]</a>    <span class="k">def</span> <span class="nf">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pub</span><span class="p">,</span> <span class="n">delta</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">target_value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            pub (Publisher) : the publisher for the joint controller.</span>
+<span class="sd">            delta (float) : the increment used to update the value at each iteration.</span>
+<span class="sd">            value (float) : the value for the current configuration of the joint.</span>
+<span class="sd">            target_value (float) : the value for the target configuration of the joint.</span>
+
+<span class="sd">        This method makes the arm joint of the robot rotate by incrementing the value</span>
+<span class="sd">        of the configuration with a delta at each iteration.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Defining a rate for moving the arm slowly</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Rate</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+        <span class="c1"># The signed delta</span>
+        <span class="n">update_delta_sign</span> <span class="o">=</span> <span class="n">copysign</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">target_value</span><span class="o">-</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">update_delta_value</span> <span class="o">=</span> <span class="n">update_delta_sign</span><span class="o">*</span><span class="n">delta</span>
+        
+        <span class="c1"># Move until the target value is reached</span>
+        <span class="k">while</span> <span class="n">value</span><span class="o">*</span><span class="n">update_delta_sign</span> <span class="o">&lt;</span> <span class="n">target_value</span><span class="o">*</span><span class="n">update_delta_sign</span> <span class="p">:</span>
+            <span class="c1"># Publishing the new control</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="n">pub</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="c1"># Updating the value value</span>
+            <span class="n">value</span> <span class="o">+=</span> <span class="n">update_delta_value</span>
+            <span class="c1"># Sleeping until the next cycle</span>
+            <span class="n">rate</span><span class="o">.</span><span class="n">sleep</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="RobotInspectionRoutine._rotate_arm_joint_at"><a class="viewcode-back" href="../../index.html#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at">[docs]</a>    <span class="k">def</span> <span class="nf">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pub</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            pub (Publisher) : the publisher for the joint controller.</span>
+<span class="sd">            value (float) : the value for the new configuration of the joint.</span>
+<span class="sd">        </span>
+<span class="sd">        This method makes the arm joint of the robot rotate to the</span>
+<span class="sd">        requested configuration by publishing the value on the topic.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="n">control</span> <span class="o">=</span> <span class="n">Float64</span><span class="p">()</span>
+        <span class="n">control</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="n">pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">control</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">rospy</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="mf">0.1</span><span class="p">))</span></div></div>
+        
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span> <span class="p">:</span>
+    <span class="n">RobotInspectionRoutine</span><span class="p">()</span>
+    <span class="n">rospy</span><span class="o">.</span><span class="n">spin</span><span class="p">()</span>
+    
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mattia Musumeci.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

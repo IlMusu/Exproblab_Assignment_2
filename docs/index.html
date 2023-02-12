@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Welcome to exprob_assignment_2’s documentation! &mdash; exprob_assignment_2  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            exprob_assignment_2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to exprob_assignment_2’s documentation!</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#module-scripts.ontology_map_builder">Ontology Map Builder Module</a><ul>
+<li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder.__init__"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder.__weakref__"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder.__weakref__</span></code></a></li>
+<li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder._build_ontology_map()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map_from_msg"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder._build_ontology_map_from_msg()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map_from_params"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder._build_ontology_map_from_params()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder._onto_reference_service"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder._onto_reference_service()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder._room_position_service"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder._room_position_service()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-scripts.motion_controller">Motion Controller</a><ul>
+<li><a class="reference internal" href="#scripts.motion_controller.MotionController"><code class="docutils literal notranslate"><span class="pre">MotionController</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.motion_controller.MotionController.__init__"><code class="docutils literal notranslate"><span class="pre">MotionController.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.motion_controller.MotionController.__weakref__"><code class="docutils literal notranslate"><span class="pre">MotionController.__weakref__</span></code></a></li>
+<li><a class="reference internal" href="#scripts.motion_controller.MotionController._compute_robot_distance"><code class="docutils literal notranslate"><span class="pre">MotionController._compute_robot_distance()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.motion_controller.MotionController._follow_path"><code class="docutils literal notranslate"><span class="pre">MotionController._follow_path()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.motion_controller.MotionController._on_odom_callback"><code class="docutils literal notranslate"><span class="pre">MotionController._on_odom_callback()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.motion_controller.MotionController._wait_until_robot_at_goal"><code class="docutils literal notranslate"><span class="pre">MotionController._wait_until_robot_at_goal()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-scripts.planner_controller">Planner Controller</a><ul>
+<li><a class="reference internal" href="#scripts.planner_controller.PlannerController"><code class="docutils literal notranslate"><span class="pre">PlannerController</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.planner_controller.PlannerController.__init__"><code class="docutils literal notranslate"><span class="pre">PlannerController.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.planner_controller.PlannerController.__weakref__"><code class="docutils literal notranslate"><span class="pre">PlannerController.__weakref__</span></code></a></li>
+<li><a class="reference internal" href="#scripts.planner_controller.PlannerController._compute_path"><code class="docutils literal notranslate"><span class="pre">PlannerController._compute_path()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-scripts.robot_inspection_routine">Robot Inspection Routine</a><ul>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__init__"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine.__weakref__</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._on_inspection_request()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._rotate_arm_joint_at()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._rotate_arm_joint_smoothly()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">exprob_assignment_2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Welcome to exprob_assignment_2’s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="welcome-to-exprob-assignment-2-s-documentation">
+<h1>Welcome to exprob_assignment_2’s documentation!<a class="headerlink" href="#welcome-to-exprob-assignment-2-s-documentation" title="Permalink to this heading"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="module-scripts.ontology_map_builder">
+<span id="ontology-map-builder-module"></span><h1>Ontology Map Builder Module<a class="headerlink" href="#module-scripts.ontology_map_builder" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.ontology_map_builder.OntologyMapBuilder">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.ontology_map_builder.</span></span><span class="sig-name descname"><span class="pre">OntologyMapBuilder</span></span><a class="reference internal" href="_modules/scripts/ontology_map_builder.html#OntologyMapBuilder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.ontology_map_builder.OntologyMapBuilder" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Provides services on :</dt><dd><ul class="simple">
+<li><p>/ontology_map/reference_name (ReferenceName)</p></li>
+<li><p>/ontology_map/room_position (RoomPosition)</p></li>
+<li><p>/ontology_map/build_map (OntologyMap)</p></li>
+</ul>
+</dd>
+<dt>ROS Parameters :</dt><dd><ul class="simple">
+<li><p>/ontology_reference (string) : The reference name of the ontology.</p></li>
+<li><p>/ontology_path (string) : The global path of the default ontology.</p></li>
+<li><p>/ontology_uri (string) : The uri of the ontology.</p></li>
+<li><p>/rooms (list) : The list of rooms names for building the map.</p></li>
+<li><p>/rooms_doors (list) : At index i, the list of doors belonging to room i.</p></li>
+<li><p>/rooms_positions (list) : At index i, the position of room i.</p></li>
+<li><p>/robot_room (string) : The initial room at which the robot is located.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This ROS node loads a default ontology into the ARMOR server and then creates
+the map specified by the arguments: notice that those arguments are optional
+and if not provided, this node waits for the map on the /ontology_map/build_map
+topic. Once the map if fully created, this node provides a service for providing
+the position of room given the name.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.ontology_map_builder.OntologyMapBuilder.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/ontology_map_builder.html#OntologyMapBuilder.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.ontology_map_builder.OntologyMapBuilder.__init__" title="Permalink to this definition"></a></dt>
+<dd><div class="line-block">
+<div class="line">In the constructor method, this class:</div>
+<div class="line">1. Creates a service for the “/ontology_map/reference_name” service.</div>
+<div class="line">2. Creates a service for the “/ontology_map/room_position” service.</div>
+<div class="line">3. Creates a service for the “/ontology_map/build_map” service.</div>
+<div class="line">4. Initializes objects to communicate with ARMOR.</div>
+<div class="line">5. Builds the map by calling the related method.</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scripts.ontology_map_builder.OntologyMapBuilder.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#scripts.ontology_map_builder.OntologyMapBuilder.__weakref__" title="Permalink to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map">
+<span class="sig-name descname"><span class="pre">_build_ontology_map</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rooms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rooms_doors</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rooms_positions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/ontology_map_builder.html#OntologyMapBuilder._build_ontology_map"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rooms</strong> (<em>list</em>) – The list of rooms names for building the map.</p></li>
+<li><p><strong>rooms_doors</strong> (<em>list</em>) – At index i, the list of doors belonging to room i.</p></li>
+<li><p><strong>rooms_positions</strong> (<em>list</em>) – At index i, the position of room i.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line">This method creates the map specified by the user:</div>
+<div class="line">1. Loads the default ontology into the ARMOR server.</div>
+<div class="line">2. Decodes the description of the map and builds it.</div>
+<div class="line">3. Disjoints the necessary individuals on the ontology</div>
+<div class="line">4. Organizes the rooms positions into a map.</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map_from_msg">
+<span class="sig-name descname"><span class="pre">_build_ontology_map_from_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/ontology_map_builder.html#OntologyMapBuilder._build_ontology_map_from_msg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map_from_msg" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msg</strong> (<em>OntologyMap</em>) – The message from the client.</p>
+</dd>
+</dl>
+<p>This method parses the map from the message and the calls the method for
+actually building the map.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map_from_params">
+<span class="sig-name descname"><span class="pre">_build_ontology_map_from_params</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/ontology_map_builder.html#OntologyMapBuilder._build_ontology_map_from_params"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map_from_params" title="Permalink to this definition"></a></dt>
+<dd><p>This method parses the map from the parameters and then calls the method for
+actually building the map. If one of “rooms”, “rooms_doors”, “rooms_positions”
+is not set, then the method will not be called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.ontology_map_builder.OntologyMapBuilder._onto_reference_service">
+<span class="sig-name descname"><span class="pre">_onto_reference_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/ontology_map_builder.html#OntologyMapBuilder._onto_reference_service"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.ontology_map_builder.OntologyMapBuilder._onto_reference_service" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>ReferenceNameRequest</em>) – The request from the client.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response to the request.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(ReferenceNameResponse)</p>
+</dd>
+</dl>
+<p>This is the callback for the “/ontology_map/reference_name” service.
+It makes the client wait until the the map is complete, then responds
+with the reference name of the ontology.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.ontology_map_builder.OntologyMapBuilder._room_position_service">
+<span class="sig-name descname"><span class="pre">_room_position_service</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/ontology_map_builder.html#OntologyMapBuilder._room_position_service"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.ontology_map_builder.OntologyMapBuilder._room_position_service" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>request</strong> (<em>RoomPositionRequest</em>) – The request from the client.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The response to the request.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>(RoomPositionResponse)</p>
+</dd>
+</dl>
+<p>This is the callback for the “/ontology_map/room_position” service.
+It checks that the requested room_name is valid and then fills the
+response with the position for the requested room.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-scripts.motion_controller">
+<span id="motion-controller"></span><h1>Motion Controller<a class="headerlink" href="#module-scripts.motion_controller" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.motion_controller.MotionController">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.motion_controller.</span></span><span class="sig-name descname"><span class="pre">MotionController</span></span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Creates an action client for:</dt><dd><ul class="simple">
+<li><p>/move_base (MoveBaseAction)</p></li>
+</ul>
+</dd>
+<dt>Creates an action server for:</dt><dd><ul class="simple">
+<li><p>/follow_path (FollowPathAction)</p></li>
+</ul>
+</dd>
+<dt>Subscribes to topics:</dt><dd><ul class="simple">
+<li><p>/odom (Odometry)</p></li>
+</ul>
+</dd>
+<dt>ROS Parameters :</dt><dd><ul class="simple">
+<li><dl class="simple">
+<dt>/goal_threshold (float)<span class="classifier">The distance from goal at which the robot is</span></dt><dd><p>considered to be arrived at goal.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+<p>This Ros Node makes the robot follow a path composed by waypoints.
+The actual movements between the waypoints is perfomed through move_base.
+Sometimes the robot gets stuck just before reaching the requested goal,
+because of this reason, this node checks the distance from the robot and
+the current goal position and interrupts move_base when the distance is
+under the user defined threshold.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.motion_controller.MotionController.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController.__init__" title="Permalink to this definition"></a></dt>
+<dd><div class="line-block">
+<div class="line">In the constructor method, this class:</div>
+<div class="line">1. Creates an action client for the “/move_base” action.</div>
+<div class="line">2. Creates an action server for the “/follow_path” action.</div>
+<div class="line">3. Creates a subscriber for the “/odom” topic.</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scripts.motion_controller.MotionController.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#scripts.motion_controller.MotionController.__weakref__" title="Permalink to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.motion_controller.MotionController._compute_robot_distance">
+<span class="sig-name descname"><span class="pre">_compute_robot_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">goal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController._compute_robot_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController._compute_robot_distance" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>goal</strong> (<em>Point</em>) – the goal position.</p>
+</dd>
+</dl>
+<p>Computes the distance between the robot and the goal.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.motion_controller.MotionController._follow_path">
+<span class="sig-name descname"><span class="pre">_follow_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController._follow_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController._follow_path" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>action</strong> (<em>FollowPathGoal</em>) – the requested path to follow.</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line">This is the callback for the /follow_path action server:</div>
+<div class="line">1. Waits until the move_base action server is available.</div>
+<div class="line">2. For each waypoint inside the requested path:</div>
+<div class="line-block">
+<div class="line">3. Creates a MoveBaseAction containing the waypoint as goal.</div>
+<div class="line">4. Sends the goal the move_base action server.</div>
+<div class="line">5. Waits until the robot is arried at the waypoint.</div>
+</div>
+<div class="line">6. Creates and publishes the results.</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.motion_controller.MotionController._on_odom_callback">
+<span class="sig-name descname"><span class="pre">_on_odom_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController._on_odom_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController._on_odom_callback" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>msg</strong> (<em>Odometry</em>) – the message containing the robot odometry.</p>
+</dd>
+</dl>
+<p>This is the callback for the /odom topic. The message contains the
+current position of the robot which is stored to be used later.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.motion_controller.MotionController._wait_until_robot_at_goal">
+<span class="sig-name descname"><span class="pre">_wait_until_robot_at_goal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController._wait_until_robot_at_goal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController._wait_until_robot_at_goal" title="Permalink to this definition"></a></dt>
+<dd><p>This function blocks the execution until the robot is arrived at destination
+which might happen because of two reasons: the first one is that move_base
+completes the execution of the action, the second one is because the distance
+between the robot and the goal is less than the /goal_threshold parameter.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-scripts.planner_controller">
+<span id="planner-controller"></span><h1>Planner Controller<a class="headerlink" href="#module-scripts.planner_controller" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.planner_controller.PlannerController">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.planner_controller.</span></span><span class="sig-name descname"><span class="pre">PlannerController</span></span><a class="reference internal" href="_modules/scripts/planner_controller.html#PlannerController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.planner_controller.PlannerController" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Creates an action server for:</dt><dd><ul class="simple">
+<li><p>/compute_path (ComputePathAction)</p></li>
+</ul>
+</dd>
+</dl>
+<p>This ROS Node creates a plan composed by waypoints that the robot has
+to follow in order to reach the goal position. In this simple case, the
+plan is composed by just the goal position.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.planner_controller.PlannerController.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/planner_controller.html#PlannerController.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.planner_controller.PlannerController.__init__" title="Permalink to this definition"></a></dt>
+<dd><div class="line-block">
+<div class="line">In the constructor method, this class:</div>
+<div class="line">1. Creates the /planner_controller action server.</div>
+<div class="line">2. Starts the server.</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scripts.planner_controller.PlannerController.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#scripts.planner_controller.PlannerController.__weakref__" title="Permalink to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.planner_controller.PlannerController._compute_path">
+<span class="sig-name descname"><span class="pre">_compute_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/planner_controller.html#PlannerController._compute_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.planner_controller.PlannerController._compute_path" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>action</strong> (<em>ComputePathGoal</em>) – the position the robot has to reach.</p>
+</dd>
+</dl>
+<p>This is the callback for the /planner_controller action server.
+In this simple example the path, which is normally composed by waypoint
+that the robot needs to follow in order to reach the requested goal, is
+composed by just the goal position.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-scripts.robot_inspection_routine">
+<span id="robot-inspection-routine"></span><h1>Robot Inspection Routine<a class="headerlink" href="#module-scripts.robot_inspection_routine" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.robot_inspection_routine.</span></span><span class="sig-name descname"><span class="pre">RobotInspectionRoutine</span></span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Publishes to the topics:</dt><dd><ul class="simple">
+<li><p>/joint0_position_controller/command (Float64)</p></li>
+<li><p>/joint1_position_controller/command (Float64)</p></li>
+<li><p>/camera_position_controller/command (Float64)</p></li>
+</ul>
+</dd>
+<dt>Creates an action server for:</dt><dd><ul class="simple">
+<li><p>/robot_inspection_routine (RobotInspectionRoutineAction)</p></li>
+</ul>
+</dd>
+</dl>
+<p>This ROS Node makes the arm of the robot rotate in circular patters.
+This behavior is achieved by subscribing to the topics of each joint
+of the arm and manually setting the angle values.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__init__" title="Permalink to this definition"></a></dt>
+<dd><div class="line-block">
+<div class="line">In the constructor method, this class:</div>
+<div class="line">1. Creates a subscriber for the “/joint0_position_controller/command” topic.</div>
+<div class="line">2. Creates a subscriber for the “/joint1_position_controller/command” topic.</div>
+<div class="line">3. Creates a subscriber for the “/camera_position_controller/command” topic.</div>
+<div class="line">4. Creates an action server for the “/robot_inspection_routine” action.</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__" title="Permalink to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request">
+<span class="sig-name descname"><span class="pre">_on_inspection_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._on_inspection_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>action</strong> (<em>RobotInspectionRoutineGoal</em>) – the goal.</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line">This is the callback for the /robot_inspection_routine action server:</div>
+<div class="line">1. If the routine is already taking place:</div>
+<div class="line-block">
+<div class="line">2. Sends the result as failed.</div>
+</div>
+<div class="line">2. Makes the first joint rotate to -pi.</div>
+<div class="line">3. Makes the camera joint to 0.3.</div>
+<div class="line">4. Makes the first joint rotate to pi.</div>
+<div class="line">5. Makes the camera rotate to -0.8.</div>
+<div class="line">6. Makes the first joint rotate to -pi.</div>
+<div class="line">7. Resets the joint positions.</div>
+<div class="line">8. Sends the result as success.</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at">
+<span class="sig-name descname"><span class="pre">_rotate_arm_joint_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._rotate_arm_joint_at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pub</strong> (<em>Publisher</em>) – the publisher for the joint controller.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the value for the new configuration of the joint.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This method makes the arm joint of the robot rotate to the
+requested configuration by publishing the value on the topic.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly">
+<span class="sig-name descname"><span class="pre">_rotate_arm_joint_smoothly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._rotate_arm_joint_smoothly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pub</strong> (<em>Publisher</em>) – the publisher for the joint controller.</p></li>
+<li><p><strong>delta</strong> (<em>float</em>) – the increment used to update the value at each iteration.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the value for the current configuration of the joint.</p></li>
+<li><p><strong>target_value</strong> (<em>float</em>) – the value for the target configuration of the joint.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This method makes the arm joint of the robot rotate by incrementing the value
+of the configuration with a delta at each iteration.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mattia Musumeci.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

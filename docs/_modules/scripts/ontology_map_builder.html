@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts.ontology_map_builder &mdash; exprob_assignment_2  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            exprob_assignment_2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">exprob_assignment_2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scripts.ontology_map_builder</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scripts.ontology_map_builder</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="c1"># Importing AST library for safely evaluating strings</span>
+<span class="kn">import</span> <span class="nn">ast</span>
+<span class="c1"># Events for synchronizing threads</span>
+<span class="kn">from</span> <span class="nn">threading</span> <span class="kn">import</span> <span class="n">Event</span>
+
+<span class="c1"># Importing ARMOR libraries to easily interact with ARMOR</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_client</span> <span class="kn">import</span> <span class="n">ArmorClient</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_utils_client</span> <span class="kn">import</span> <span class="n">ArmorUtilsClient</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_query_client</span> <span class="kn">import</span> <span class="n">ArmorQueryClient</span>
+<span class="kn">from</span> <span class="nn">armor_api.armor_manipulation_client</span> <span class="kn">import</span> <span class="n">ArmorManipulationClient</span>
+
+<span class="c1"># Importing ROS library for python</span>
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">from</span> <span class="nn">geometry_msgs.msg</span> <span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">robot_state_msgs.srv</span> <span class="kn">import</span> <span class="n">RoomPosition</span><span class="p">,</span> <span class="n">RoomPositionResponse</span>
+<span class="kn">from</span> <span class="nn">robot_state_msgs.srv</span> <span class="kn">import</span> <span class="n">ReferenceName</span><span class="p">,</span> <span class="n">ReferenceNameResponse</span>
+<span class="kn">from</span> <span class="nn">final_assignment.msg</span> <span class="kn">import</span> <span class="n">OntologyMap</span>
+
+<div class="viewcode-block" id="OntologyMapBuilder"><a class="viewcode-back" href="../../index.html#scripts.ontology_map_builder.OntologyMapBuilder">[docs]</a><span class="k">class</span> <span class="nc">OntologyMapBuilder</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Provides services on :</span>
+<span class="sd">        - /ontology_map/reference_name (ReferenceName)</span>
+<span class="sd">        - /ontology_map/room_position (RoomPosition)</span>
+<span class="sd">        - /ontology_map/build_map (OntologyMap)</span>
+<span class="sd">    ROS Parameters :</span>
+<span class="sd">        - /ontology_reference (string) : The reference name of the ontology.</span>
+<span class="sd">        - /ontology_path (string) : The global path of the default ontology.</span>
+<span class="sd">        - /ontology_uri (string) : The uri of the ontology.</span>
+<span class="sd">        - /rooms (list) : The list of rooms names for building the map.</span>
+<span class="sd">        - /rooms_doors (list) : At index i, the list of doors belonging to room i.</span>
+<span class="sd">        - /rooms_positions (list) : At index i, the position of room i.</span>
+<span class="sd">        - /robot_room (string) : The initial room at which the robot is located.</span>
+<span class="sd">    </span>
+<span class="sd">    This ROS node loads a default ontology into the ARMOR server and then creates</span>
+<span class="sd">    the map specified by the arguments: notice that those arguments are optional</span>
+<span class="sd">    and if not provided, this node waits for the map on the /ontology_map/build_map</span>
+<span class="sd">    topic. Once the map if fully created, this node provides a service for providing </span>
+<span class="sd">    the position of room given the name.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="OntologyMapBuilder.__init__"><a class="viewcode-back" href="../../index.html#scripts.ontology_map_builder.OntologyMapBuilder.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="p">:</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        |  In the constructor method, this class:</span>
+<span class="sd">        |  1. Creates a service for the &quot;/ontology_map/reference_name&quot; service.</span>
+<span class="sd">        |  2. Creates a service for the &quot;/ontology_map/room_position&quot; service.</span>
+<span class="sd">        |  3. Creates a service for the &quot;/ontology_map/build_map&quot; service.</span>
+<span class="sd">        |  4. Initializes objects to communicate with ARMOR.</span>
+<span class="sd">        |  5. Builds the map by calling the related method.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Initializing the ROS node</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;ontology_map_builder&#39;</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="n">rospy</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
+        <span class="c1"># Creating a Service for the map reference name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_map_ready_srv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span>
+            <span class="s1">&#39;/ontology_map/reference_name&#39;</span><span class="p">,</span> <span class="n">ReferenceName</span><span class="p">,</span> 
+            <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onto_reference_service</span>
+        <span class="p">)</span>
+        <span class="c1"># Creating a Service to provide the room positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rooms_pos_srv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span>
+            <span class="s1">&#39;/ontology_map/room_position&#39;</span><span class="p">,</span> <span class="n">RoomPosition</span><span class="p">,</span> 
+            <span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_room_position_service</span>
+        <span class="p">)</span>
+        <span class="c1"># Creating a Topic for building the map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_map_sub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span>
+            <span class="s1">&#39;/ontology_map/build_map&#39;</span><span class="p">,</span> <span class="n">OntologyMap</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+            <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_ontology_map_from_msg</span>
+        <span class="p">)</span>
+        <span class="c1"># Initializing object to communicate with ARMOR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_ref_name</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;~ontology_reference_name&#39;</span><span class="p">,</span> <span class="s1">&#39;ontology_reference&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_armor_client</span> <span class="o">=</span> <span class="n">ArmorClient</span><span class="p">(</span><span class="s1">&#39;ontology_map_builder&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onto_ref_name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_utils</span> <span class="o">=</span> <span class="n">ArmorUtilsClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_armor_client</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_query</span> <span class="o">=</span> <span class="n">ArmorQueryClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_armor_client</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_manip</span> <span class="o">=</span> <span class="n">ArmorManipulationClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_armor_client</span><span class="p">)</span>
+        <span class="c1"># Setting the map as not already built</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete_event</span> <span class="o">=</span> <span class="n">Event</span><span class="p">()</span>
+        <span class="c1"># Check if the map needs to be build from params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_ontology_map_from_params</span><span class="p">()</span></div>
+
+        
+<div class="viewcode-block" id="OntologyMapBuilder._build_ontology_map_from_params"><a class="viewcode-back" href="../../index.html#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map_from_params">[docs]</a>    <span class="k">def</span> <span class="nf">_build_ontology_map_from_params</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method parses the map from the parameters and then calls the method for </span>
+<span class="sd">        actually building the map. If one of &quot;rooms&quot;, &quot;rooms_doors&quot;, &quot;rooms_positions&quot;</span>
+<span class="sd">        is not set, then the method will not be called.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Check if the map must be built from params</span>
+        <span class="n">rooms</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;~rooms&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">))</span>
+        <span class="n">rooms_doors</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;~rooms_doors&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">))</span>
+        <span class="n">rooms_positions</span> <span class="o">=</span> <span class="n">ast</span><span class="o">.</span><span class="n">literal_eval</span><span class="p">(</span><span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;~rooms_positions&#39;</span><span class="p">,</span> <span class="s1">&#39;None&#39;</span><span class="p">))</span>
+        <span class="c1"># Logging informations about the parametes</span>
+        <span class="k">if</span> <span class="n">rooms</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">rooms_doors</span> <span class="o">==</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">rooms_positions</span> <span class="o">==</span> <span class="kc">None</span> <span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] Map was not found in parameters, waiting for message!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] Found map from parameters!&quot;</span><span class="p">)</span>
+        <span class="c1"># The rooms is already a list of strings</span>
+        <span class="c1"># The rooms_doors is already a list of list of strings</span>
+        <span class="c1"># The rooms_positions need to be parsed to a list of Point</span>
+        <span class="n">rooms_positions</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">pos</span><span class="p">:</span> <span class="n">Point</span><span class="p">(</span><span class="n">pos</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">pos</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">0</span><span class="p">),</span> <span class="n">rooms_positions</span><span class="p">)</span>
+        <span class="c1"># Building the map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_ontology_map</span><span class="p">(</span><span class="n">rooms</span><span class="p">,</span> <span class="n">rooms_doors</span><span class="p">,</span> <span class="n">rooms_positions</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="OntologyMapBuilder._build_ontology_map_from_msg"><a class="viewcode-back" href="../../index.html#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map_from_msg">[docs]</a>    <span class="k">def</span> <span class="nf">_build_ontology_map_from_msg</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            msg (OntologyMap) : The message from the client.</span>
+<span class="sd">        </span>
+<span class="sd">        This method parses the map from the message and the calls the method for</span>
+<span class="sd">        actually building the map.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># The rooms is already a list of strings</span>
+        <span class="c1"># The rooms_positions is already a list of list of Point</span>
+        <span class="c1"># The rooms_doors need to be parsed to a list of list of strings</span>
+        <span class="n">rooms_doors</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">doors</span><span class="p">:</span> <span class="n">doors</span><span class="o">.</span><span class="n">doors</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">doors</span><span class="p">)</span>
+        <span class="c1"># Building the map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build_ontology_map</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">rooms</span><span class="p">,</span> <span class="n">rooms_doors</span><span class="p">,</span> <span class="n">msg</span><span class="o">.</span><span class="n">positions</span><span class="p">)</span></div>
+    
+    
+<div class="viewcode-block" id="OntologyMapBuilder._build_ontology_map"><a class="viewcode-back" href="../../index.html#scripts.ontology_map_builder.OntologyMapBuilder._build_ontology_map">[docs]</a>    <span class="k">def</span> <span class="nf">_build_ontology_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rooms</span><span class="p">,</span> <span class="n">rooms_doors</span><span class="p">,</span> <span class="n">rooms_positions</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            rooms (list) : The list of rooms names for building the map.</span>
+<span class="sd">            rooms_doors (list) : At index i, the list of doors belonging to room i.</span>
+<span class="sd">            rooms_positions (list) : At index i, the position of room i.</span>
+<span class="sd">        </span>
+<span class="sd">        |  This method creates the map specified by the user:</span>
+<span class="sd">        |  1. Loads the default ontology into the ARMOR server.</span>
+<span class="sd">        |  2. Decodes the description of the map and builds it.</span>
+<span class="sd">        |  3. Disjoints the necessary individuals on the ontology</span>
+<span class="sd">        |  4. Organizes the rooms positions into a map.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Check if the map is already build</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete</span> <span class="p">:</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">logerr</span><span class="p">(</span><span class="s2">&quot;Map is already built!&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="c1"># Getting the map parameters from the Parameter Server</span>
+        <span class="n">onto_path</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;~ontology_path&#39;</span><span class="p">)</span>
+        <span class="n">onto_uri</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;~ontology_uri&#39;</span><span class="p">)</span>
+        <span class="n">robot_room</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s1">&#39;~robot_room&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">)</span>
+        <span class="c1"># Loading the default ontology into ARMOR</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] The base ontology is located at: &quot;</span><span class="o">+</span><span class="n">onto_path</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] Loading base ontology with uri: &quot;</span><span class="o">+</span><span class="n">onto_uri</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_utils</span><span class="o">.</span><span class="n">load_ref_from_file</span><span class="p">(</span><span class="n">onto_path</span><span class="p">,</span> <span class="n">onto_uri</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># Starting to create map</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] Starting to build map.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="p">[</span><span class="n">room</span><span class="p">,</span> <span class="n">doors</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rooms</span><span class="p">,</span> <span class="n">rooms_doors</span><span class="p">)</span> <span class="p">:</span>
+            <span class="c1"># Adding rooms with all the related doors</span>
+            <span class="k">for</span> <span class="n">door</span> <span class="ow">in</span> <span class="n">doors</span> <span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">room</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">room</span><span class="p">),</span> <span class="n">door</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">door</span><span class="p">))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_onto_manip</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;hasDoor&#39;</span><span class="p">,</span> <span class="n">room</span><span class="p">,</span> <span class="n">door</span><span class="p">)</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] Added door &quot;</span><span class="o">+</span><span class="n">door</span><span class="o">+</span><span class="s2">&quot; to room &quot;</span><span class="o">+</span><span class="n">room</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+            <span class="c1"># Setting room properties to initial values</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_onto_manip</span><span class="o">.</span><span class="n">add_dataprop_to_ind</span><span class="p">(</span><span class="s1">&#39;visitedAt&#39;</span><span class="p">,</span> <span class="n">room</span><span class="p">,</span> <span class="s1">&#39;Long&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+        <span class="c1"># Disjoint between all the rooms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_utils</span><span class="o">.</span><span class="n">sync_buffered_reasoner</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_manip</span><span class="o">.</span><span class="n">disj_inds_of_class</span><span class="p">(</span><span class="s1">&#39;ROOM&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_manip</span><span class="o">.</span><span class="n">disj_inds_of_class</span><span class="p">(</span><span class="s1">&#39;DOOR&#39;</span><span class="p">)</span>
+        <span class="c1"># Positioning robot to specified room</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_manip</span><span class="o">.</span><span class="n">add_objectprop_to_ind</span><span class="p">(</span><span class="s1">&#39;isIn&#39;</span><span class="p">,</span> <span class="s1">&#39;Robot1&#39;</span><span class="p">,</span> <span class="n">robot_room</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] Positioned robot in room &quot;</span><span class="o">+</span><span class="n">robot_room</span><span class="o">+</span><span class="s2">&quot;.&quot;</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] Finished building map.&quot;</span><span class="p">)</span>
+        <span class="c1"># Organizing room positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rooms_positions</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="p">[</span><span class="n">room</span><span class="p">,</span> <span class="n">pos</span><span class="p">]</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rooms</span><span class="p">,</span> <span class="n">rooms_positions</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rooms_positions</span><span class="p">[</span><span class="n">room</span><span class="p">]</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[BUILDER] Finished organizing rooms positions.&quot;</span><span class="p">)</span>
+        <span class="c1"># The building is now complete</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete_event</span><span class="o">.</span><span class="n">set</span><span class="p">()</span></div>
+        
+    
+<div class="viewcode-block" id="OntologyMapBuilder._onto_reference_service"><a class="viewcode-back" href="../../index.html#scripts.ontology_map_builder.OntologyMapBuilder._onto_reference_service">[docs]</a>    <span class="k">def</span> <span class="nf">_onto_reference_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            request (ReferenceNameRequest) : The request from the client.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (ReferenceNameResponse) : The response to the request.</span>
+
+<span class="sd">        This is the callback for the &quot;/ontology_map/reference_name&quot; service.</span>
+<span class="sd">        It makes the client wait until the the map is complete, then responds</span>
+<span class="sd">        with the reference name of the ontology.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Making the client wait until the map is built</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete_event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="c1"># Creating the response object</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">ReferenceNameResponse</span><span class="p">()</span>
+        <span class="c1"># Responding with the name of the reference ontology</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_onto_ref_name</span>
+        <span class="k">return</span> <span class="n">response</span></div>
+
+
+<div class="viewcode-block" id="OntologyMapBuilder._room_position_service"><a class="viewcode-back" href="../../index.html#scripts.ontology_map_builder.OntologyMapBuilder._room_position_service">[docs]</a>    <span class="k">def</span> <span class="nf">_room_position_service</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            request (RoomPositionRequest) : The request from the client.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            (RoomPositionResponse) : The response to the request.</span>
+
+<span class="sd">        This is the callback for the &quot;/ontology_map/room_position&quot; service.</span>
+<span class="sd">        It checks that the requested room_name is valid and then fills the</span>
+<span class="sd">        response with the position for the requested room.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Making the client wait until the map is built</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete</span> <span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete_event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+        <span class="c1"># Creating the response object</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">RoomPositionResponse</span><span class="p">()</span>
+        <span class="c1"># Filling the fields of the response</span>
+        <span class="n">response</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">room_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rooms_positions</span>
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">valid</span> <span class="p">:</span>
+            <span class="n">response</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rooms_positions</span><span class="p">[</span><span class="n">request</span><span class="o">.</span><span class="n">room_name</span><span class="p">]</span>
+        <span class="c1"># Returning the response to the client</span>
+        <span class="k">return</span> <span class="n">response</span></div></div>
+
+        
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span> <span class="p">:</span>
+    <span class="c1"># Creating and starting the map builder</span>
+    <span class="n">builder</span> <span class="o">=</span> <span class="n">OntologyMapBuilder</span><span class="p">()</span>
+    <span class="c1"># Spinning to prevent quitting</span>
+    <span class="n">rospy</span><span class="o">.</span><span class="n">spin</span><span class="p">()</span>
+
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mattia Musumeci.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
