@@ -127,3 +127,13 @@ Notice that this diagram only shows the beginning of the execution, ence, the de
 
 This first horizonal line shows that there can be multiple iterations of performing the inspection routine and then communicating the markers id to the marker server. That is because at the ispection routine the robot might not have detected all the markers or some of them might be wrong.  
 The second horizonal line shows the end of this sequence diagram and the begin of the sequence diagram shown in the repository of the previous assignment.
+
+### ROS Messages Services And Actions
+
+### ROS Parameters
+
+## 4. RUNNING CODE
+### Detecting The Markers
+### Performing The Surveillance Task
+
+## 5. FUTURE WORK
