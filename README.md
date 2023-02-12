@@ -30,7 +30,7 @@ In the following it shown an image of the environment the robot is placed in.
 </p>
 
 ### Robot
-The robot used in the simulation is a differential robot equipped with a simple robotic arm with only two joints, a camera placed at the end-effector and a laser scanner. The following image shows the rendering of robot.
+The robot used in the simulation is a differential robot equipped with a simple robotic arm with only three joints, a camera placed at the end-effector and a laser scanner. The following image shows the rendering of robot.
 <p align="center">
 	<img src="https://i.imgur.com/dq6hsQy.jpg" width="80%">
 </p>
@@ -129,8 +129,40 @@ This first horizonal line shows that there can be multiple iterations of perform
 The second horizonal line shows the end of this sequence diagram and the begin of the sequence diagram shown in the repository of the previous assignment.
 
 ### ROS Messages Services And Actions
+In order to develop the interfaces between the components:  
+- The <b>ontology_map_builder</b> node which:  
+  - Provides the <b>`/ontology_map/reference_name`</b> service, of type `ReferenceName.srv`, to provide the reference name of the ontology that is loaded into ARMOR. This is done only once the ontology is fully created and loaded.  
+  - Provides the <b>`/ontology_map/room_position`</b> service, of type `RoomPosition.srv`, to provide a position inside the requested room. The position is measured with respect to the world frame.  
+  - Subscribes to the <b>`/ontology_map/build_map`</b> topic, of type `OntologyMap.msg`, to received the completed odometry of the environment through the message format.  
+- The <b>motion_controller</b> node which:  
+	- Creates a <b>`/follow_path`</b> action server, of type `FollowPath.action`, to make the follow a path composed of a ordered list of waypoints.  
+	- Subscribes to the <b>`/odom`</b> topic, of type `Odometry`, to retrieve the current position of the rotot.
+	- Creates a client for the <b>`/move_base`</b> action server, of type `MoveBase.action` to make the robot move between two waypoints of the path.  
+- The <b>planner_node</b> node which:  
+	- Creates a client for the <b>`/compute_path`</b> action server, of type `ComputePathAction.action`, for computing a path of waypoints from a start to a goal position.
+- The <b>robot_inspection_routine </b> node which:  
+	- Subscribes to the <b>`/joint0_position_controller/command`</b> topic, of type `Float64`, for controlling the first joint of the robot arm.
+	- Subscribes to the <b>`/joint1_position_controller/command`</b> topic, of type `Float64`, for controlling the second joint of the robot arm.
+	- Subscribes to the <b>`/camera_position_controller/command`</b> topic, of type `Float64`, for controlling the camera joint of the robot arm.
+	- Creates a <b>`/robot_inspection_routine`</b> action server, of type `RobotInspectionRoutine.action`, to make the robot move the arm is a spherical pattern.
+- The <b>marker_detector</b> node which:  
+	- Subscribes to the <b>`/camera/image_raw`</b> topic, of type `Image.msg`, for receiving the camera images and retrieving any eventual ArUco marker inside the image.
+	- Publishes to the <b>`/cmd_vel`</b> topic, of type` Twist.msg`, for updating the velocity of the robot. This is used for making the robot stand still while it is obtaining for the markers.
+	- Publishes to the <b>`/ontology_map/build_map`</b> topic, of type `OntologyMap.msg`, for publishing all the necessary information regarding the ontology that needs to be loaded on ARMOR.
+	- Uses the <b> `/room_info`</b> service, of type `RoomInformation.srv`,  for requesting the information about a room which is related to an ArUco marker id.
 
 ### ROS Parameters
+The `ontology_map_builder` node uses the following parameters:  
+- /ontology_reference (string) : The reference name of the ontology.  
+- /ontology_path (string) : The global path of the default ontology.  
+- /ontology_uri (string) : The uri of the ontology.  
+- /rooms (list) : The list of rooms names for building the map.  
+- /rooms_doors (list) : At index i, the list of doors belonging to room i.  
+- /rooms_positions (list) : At index i, the position of room i.  
+- /robot_room (string) : The initial room at which the robot is located.  
+
+The `motion_controller` node uses the following parameters:  
+- /goal_threshold (float) : The distance from goal at which the robot is considered to be arrived at goal.
 
 ## 4. RUNNING CODE
 ### Detecting The Markers
