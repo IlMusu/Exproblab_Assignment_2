@@ -122,10 +122,10 @@ A more detailed explanation of the use of the interfaces is available <b>[here](
 
 ### Sequence Diagram
 This <b>sequence diagram</b> shows a possible execution of the software contained in this repository. More in details, this diagram shows the execution in time of all the nodes and the requests/responses between them.  
-Notice that this diagram only shows the beginning of the execution, ence, the detection of the ArUco markers and the building of the ontology. That is because the remaining part of the diagram is the same shown in the <b>[README](https://github.com/IlMusu/Exproblab_Assignment_1)</b> of the previous assignment.
+Notice that this diagram only shows the beginning of the execution, ence, the detection of the ArUco markers and the building of the ontology. That is because the remaining part of the diagram is the same shown in the <b>[README](https://github.com/IlMusu/Exproblab_Assignment_1/blob/master/README.md)</b> of the previous assignment.
 
 <p align="center">
-<img src=https://github.com/IlMusu/Exproblab_Assignment_2/blob/documentation/images/sequence_diagram.svg?raw=true">
+<img src="https://github.com/IlMusu/Exproblab_Assignment_2/blob/documentation/images/sequence_diagram.svg?raw=true">
 </p>
 
 This first horizonal line shows that there can be multiple iterations of performing the inspection routine and then communicating the markers id to the marker server. That is because at the ispection routine the robot might not have detected all the markers or some of them might be wrong.  
