@@ -1,5 +1,5 @@
 # EXPROBLAB - ASSIGNMENT 2
-Author : Mattia Musumeci 4670261@studenti.unige.it
+Author : Mattia Musumeci 4670261@studenti.unige.it  
 This is the second assignment developed for the <b>Experimental Robotics Laboratory</b> course of the University of Genoa.  
 At this <b>[link](https://ilmusu.github.io/Exproblab_Assignment_1/)</b> it is possible to find the documentation for the software contained in this repository.
 
