@@ -52,7 +52,7 @@ Another image of the same location from a different perspective:
 
 ## 2. INSTALLATION AND RUNNING
 ### Installation
-The software contained in this repository is highly dependant on the architecture developed in the first assignment which can be found in this <b>[github repository](https://ilmusu.github.io/Exproblab_Assignment_2/)</b>. After correctly following the <b>INSTALLATION AND RUNNING</b> section of the previous assignment it is possible to follow this installation.  
+The software contained in this repository is highly dependant on the architecture developed in the first assignment which can be found in this <b>[github repository](https://ilmusu.github.io/Exproblab_Assignment_1)</b>. After correctly following the <b>INSTALLATION AND RUNNING</b> section of the previous assignment it is possible to follow this installation.  
 The software contained in this repository is a ROS package.  
 Therefore, in order to install the software, it is necessary to create a workspace.  
 Notice that it is also possible to use an already existing workspace.
