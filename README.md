@@ -34,6 +34,7 @@ The robot used in the simulation is a differential robot equipped with a simple 
 <center>
 	<img src="https://i.imgur.com/dq6hsQy.jpg" width="80%">
 </center>
+The robot description is located in <b>[this](https://github.com/IlMusu/Exproblab_Assignment_2/tree/master/final_assignment/urdf)</b> folder.
 
 ### Markers
 In the following images are shown the types and placement of the markers that have been used in the simulation: as can be seen, all the markers are in the same location. The robot will be spawned at the center of that location so that it can identify all the markers by just controlling the joints of the robotic arm.
@@ -119,3 +120,5 @@ In the  <b>component diagram</b>  are shown all the  <b>blocks</b>  and  <b>inte
   - The `robot_behaviour` node through the <b>/compute_path</b> message.  
 - The `motion_controller` node controls the movement of the robot. It interacts with:  
   - The `robot_behaviour` node through the <b>/follow_path</b> message.  
+
+A more detailed explanation of the use of the interfaces is available <b>[here](#ros-messages-services-and-actions)</b>.  
