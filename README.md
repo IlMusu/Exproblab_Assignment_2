@@ -39,10 +39,13 @@ The robot description is located in <b>[this](https://github.com/IlMusu/Exprobla
 
 ### Markers
 In the following images are shown the types and placement of the markers that have been used in the simulation: as can be seen, all the markers are in the same location. The robot will be spawned at the center of that location so that it can identify all the markers by just controlling the joints of the robotic arm.  
+
 <p align="center">
 	<img src="https://i.imgur.com/aR28QNP.jpg" width="80%">
 </p>
+
 Another image of the same location from a different perspective:  
+
 <p align="center">
 	<img src="https://i.imgur.com/asekuqh.jpg" width="80%">
 </p>
