@@ -117,7 +117,7 @@ In the  <b>component diagram</b>  are shown all the  <b>blocks</b>  and  <b>inte
 - The `move_base` node makes the robot move to a goal pose. It interacts with:
 	- The `motion_controller` node through the <b>/move_base</b> action. 
 
-The remaining nodes of the architecture are explained in the <b>[README](https://github.com/IlMusu/Exproblab_Assignment_1)</b> of the previous assignment.
+The remaining nodes of the architecture are explained in the <b>[README](https://github.com/IlMusu/Exproblab_Assignment_1/blob/master/README.md)</b> of the previous assignment.
 A more detailed explanation of the use of the interfaces is available <b>[here](#ros-messages-services-and-actions)</b>.  
 
 ### Sequence Diagram
