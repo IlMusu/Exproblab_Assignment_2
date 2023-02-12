@@ -142,7 +142,7 @@ In this first gif it is possible to observe how the robot is able to detect the 
 The robot performs yaw rotations of the arm from -π to π at different camera pitches.  
 It is supposed that the number of placed ArUco markers is known a priori: the robot continues to perform these rotations, which are referred to as <b>"robot inspection routines"</b> until, all the markers are located correctly. 
 
-In fact, it may happen that a marker is not detected correctly and a wrong id is obtained: the robot simply discards the value and continues to scan the environment. This behavior can be observed at the end of the gif when the markers 143 and 148 are discarded.
+In fact, it may happen that a marker is not detected correctly and a wrong id is obtained: the robot simply discards the value and continues to scan the environment. This behavior can be observed at the end of the gif when the markers 147 and 148 are discarded.
 
 ### Moving In The Environment
 <p align="center">
@@ -153,7 +153,5 @@ In this second gif instead, it is possible to observe that, after all the marker
 
 ## 5. FUTURE WORK
 These are some of the possible improvements that can be carried on this project:
-   - Currently the robotic arm placed on the robot chassis moves almost instantly from one configuration to another, this causes some problems with the physics simulation. A solution to this problem might be to better tune the parametes, use a different PID controller, or to use another type controller for the arm. 
-   - The `marker_detector` node through the <b>/ontology_map/build_map</b> action.
-   - The `robot_behavior` node through the <b>/ontology_map/reference_name</b> service.  
-   - The `robot_behavior` node through the <b>/ontology_map/room_position</b> service.  
+   - Currently the robotic arm placed on the robot chassis moves almost instantly from one configuration to another, this causes some problems with the physics simulation. This problems might be solveed by better tuning the parametes, using a different PID controller, or using another type controller for the arm. 
+   - It might happen that the move_base node does not always move the robot is the best possible way and the robot might get stuck on some walls. This problems might be solved by better tuning the move_base parameters or use another node for moving the robot.
