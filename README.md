@@ -49,10 +49,9 @@ Another image of the same location from a different perspective:
 <p align="center">
 	<img src="https://i.imgur.com/asekuqh.jpg" width="80%">
 </p>
-
 ## 2. INSTALLATION AND RUNNING
 ### Installation
-The software contained in this repository is highly dependant on the architecture developed in the first assignment which can be found in this <b>[github repository](https://ilmusu.github.io/Exproblab_Assignment_1)</b>. After correctly following the <b>INSTALLATION AND RUNNING</b> section of the previous assignment it is possible to follow this installation.  
+The software contained in this repository is highly dependant on the architecture developed in the first assignment which can be found in this <b>[github repository](https://github.com/IlMusu/Exproblab_Assignment_1)</b>. After correctly following the <b>INSTALLATION AND RUNNING</b> section of the previous assignment it is possible to follow this installation.  
 The software contained in this repository is a ROS package.  
 Therefore, in order to install the software, it is necessary to create a workspace.  
 Notice that it is also possible to use an already existing workspace.
@@ -95,7 +94,7 @@ roslaunch final_assignment robot_surveillance.launch
 In the  <b>component diagram</b>  are shown all the  <b>blocks</b>  and  <b>interfaces</b>  that have been used or developed in order to obtain the desired software architecture.
 
 <p align="center">
-<img src=https://github.com/IlMusu/Exproblab_Assignment_2/blob/documentation/images/components_diagram.svg?raw=true">
+<img src="https://github.com/IlMusu/Exproblab_Assignment_2/blob/documentation/images/components_diagram.svg?raw=true">
 </p>
 
 - The `marker_server` nodes provides the necessary information regarding a room through the related ArUco marker id. It interacts with:
