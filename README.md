@@ -49,6 +49,7 @@ Another image of the same location from a different perspective:
 <p align="center">
 	<img src="https://i.imgur.com/asekuqh.jpg" width="80%">
 </p>
+
 ## 2. INSTALLATION AND RUNNING
 ### Installation
 The software contained in this repository is highly dependant on the architecture developed in the first assignment which can be found in this <b>[github repository](https://github.com/IlMusu/Exproblab_Assignment_1)</b>. After correctly following the <b>INSTALLATION AND RUNNING</b> section of the previous assignment it is possible to follow this installation.  
