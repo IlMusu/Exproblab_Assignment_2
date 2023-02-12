@@ -1,3 +1,4 @@
+
 # EXPROBLAB - ASSIGNMENT 2
 Author : Mattia Musumeci 4670261@studenti.unige.it
 This is the second assignment developed for the <b>Experimental Robotics Laboratory</b> course of the University of Genoa.  
@@ -84,7 +85,37 @@ roslaunch final_assignment simulation_enviornment.launch
 roslaunch final_assignment armor_builder.launch
 roslaunch final_assignment robot_surveillance.launch
 ```
+## 2. SOFTWARE ARCHITECTURE
+### Component Diagram
+In the  <b>component diagram</b>  are shown all the  <b>blocks</b>  and  <b>interfaces</b>  that have been used or developed in order to obtain the desired software architecture.
 
 <p align="center">
 <img src=https://github.com/IlMusu/Exproblab_Assignment_2/blob/documentation/images/components_diagram.svg?raw=true">
 </p>
+
+- The `marker_server` nodes provides the necessary information regarding a room through the related ArUco marker id. It interacts with:
+	- The `marker_detector` node through the <b>/room_info</b> service.
+- The `marker_detector` node performs the preliminary inspection routine to obtain all the necessary ArUco markers id. Then, the ids are used to obtain the information about the topology of the environment. It interacts with:
+	- The `marker_server` node through the <b>/room_info</b> service.
+	- The `robot_inspection_routine` node through the <b>/robot_inspection_routine</b> action.
+	- The `ontology_map_builder` node through the <b>/ontology_map/build_map</b> action.
+- The `robot_inspection_routine` node makes the arm of the robot rotate in circles at diffent pitches so that all the ArUco markers around the robot are scanned correctly. It interacts with:
+	- The `marker_detector` node through the <b>/robot_inspection_routine</b> action.
+- The `ontology_map_builder` node loads the default ontology into ARMOR and builds the map following the user requests. It also contains a mapping between each room and its position with respect to the world frame. Notice that in this context, the "position of a room" is defined as a point inside the room that the robot is able to reach.  It interacts with:
+   - The `armor_service` library through the <b>/armor_interface_srv</b> service.  
+   - The `marker_detector` node through the <b>/ontology_map/build_map</b> action.
+   - The `robot_behavior` node through the <b>/ontology_map/reference_name</b> service.  
+   - The `robot_behavior` node through the <b>/ontology_map/room_position</b> service.  
+- The `robot_behavior` node contains the state machine that describes the desired behavior of the robot. The functionality of this node is based on the interaction with other nodes. In particular, it interacts with:  
+  - The `ontology_map_builder` node through the <b>/ontology_map/reference_name</b> service.  
+  - The `ontology_map_builder` node through the <b>/ontology_map/room_position</b> service.  
+  - The `armor_service` library through the <b>/armor_interface_srv</b> service.  
+  - The `battery_controller` node through the <b>/battery_level</b> message.  
+  - The `planner_controller` node through the <b>/compute_path</b> action.  
+  - The `motion_controller` node through the <b>/follow_path</b> action.  
+- The `battery_controller` node controls the level of the battery. It interacts with:  
+  - The `robot_behaviour` node through the <b>/battery_level</b> message.  
+- The `planner_controller` node constructs a path between two points. It interacts with:  
+  - The `robot_behaviour` node through the <b>/compute_path</b> message.  
+- The `motion_controller` node controls the movement of the robot. It interacts with:  
+  - The `robot_behaviour` node through the <b>/follow_path</b> message.  
