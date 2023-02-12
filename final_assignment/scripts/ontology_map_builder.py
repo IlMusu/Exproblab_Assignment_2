@@ -23,27 +23,30 @@ class OntologyMapBuilder(object):
     Provides services on :
         - /ontology_map/reference_name (ReferenceName)
         - /ontology_map/room_position (RoomPosition)
-        - /ontology_map/map 
+        - /ontology_map/build_map (OntologyMap)
     ROS Parameters :
         - /ontology_reference (string) : The reference name of the ontology.
         - /ontology_path (string) : The global path of the default ontology.
         - /ontology_uri (string) : The uri of the ontology.
-        - /map (list) : The list of pairs (room, [doors]) for building the map.
-        - /room_positions (list) : The list of pairs (room, position) for the rooms positions.
+        - /rooms (list) : The list of rooms names for building the map.
+        - /rooms_doors (list) : At index i, the list of doors belonging to room i.
+        - /rooms_positions (list) : At index i, the position of room i.
         - /robot_room (string) : The initial room at which the robot is located.
     
     This ROS node loads a default ontology into the ARMOR server and then creates
-    the map specified by the user. The description of the map is provided through 
-    parameters which are automatically decoded. Once the map if fully created,
-    this node provides a service for providing the position of room given the name.
+    the map specified by the arguments: notice that those arguments are optional
+    and if not provided, this node waits for the map on the /ontology_map/build_map
+    topic. Once the map if fully created, this node provides a service for providing 
+    the position of room given the name.
     '''
     def __init__(self) :
         '''
         |  In the constructor method, this class:
-        |  1. Creates a service for the "ontology_map/reference_name" service.
-        |  2. Creates a service for the "ontology_map/room_position" service.
-        |  3. Initializes objects to communicate with ARMOR.
-        |  4. Builds the map by calling the related method.
+        |  1. Creates a service for the "/ontology_map/reference_name" service.
+        |  2. Creates a service for the "/ontology_map/room_position" service.
+        |  3. Creates a service for the "/ontology_map/build_map" service.
+        |  4. Initializes objects to communicate with ARMOR.
+        |  5. Builds the map by calling the related method.
         '''
         # Initializing the ROS node
         rospy.init_node('ontology_map_builder', log_level=rospy.INFO)
@@ -76,6 +79,11 @@ class OntologyMapBuilder(object):
 
         
     def _build_ontology_map_from_params(self):
+        '''
+        This method parses the map from the parameters and then calls the method for 
+        actually building the map. If one of "rooms", "rooms_doors", "rooms_positions"
+        is not set, then the method will not be called.
+        '''
         # Check if the map must be built from params
         rooms = ast.literal_eval(rospy.get_param('~rooms', 'None'))
         rooms_doors = ast.literal_eval(rospy.get_param('~rooms_doors', 'None'))
@@ -94,6 +102,13 @@ class OntologyMapBuilder(object):
     
     
     def _build_ontology_map_from_msg(self, msg):
+        '''
+        Args:
+            msg (OntologyMap) : The message from the client.
+        
+        This method parses the map from the message and the calls the method for
+        actually building the map.
+        '''
         # The rooms is already a list of strings
         # The rooms_positions is already a list of list of Point
         # The rooms_doors need to be parsed to a list of list of strings
@@ -103,6 +118,18 @@ class OntologyMapBuilder(object):
     
     
     def _build_ontology_map(self, rooms, rooms_doors, rooms_positions):
+        '''
+        Args:
+            rooms (list) : The list of rooms names for building the map.
+            rooms_doors (list) : At index i, the list of doors belonging to room i.
+            rooms_positions (list) : At index i, the position of room i.
+        
+        |  This method creates the map specified by the user:
+        |  1. Loads the default ontology into the ARMOR server.
+        |  2. Decodes the description of the map and builds it.
+        |  3. Disjoints the necessary individuals on the ontology
+        |  4. Organizes the rooms positions into a map.
+        '''
         # Check if the map is already build
         if self._building_complete :
             rospy.logerr("Map is already built!")
@@ -154,9 +181,12 @@ class OntologyMapBuilder(object):
         It makes the client wait until the the map is complete, then responds
         with the reference name of the ontology.
         '''
-        response = ReferenceNameResponse()
+        # Making the client wait until the map is built
         if not self._building_complete :
             self._building_complete_event.wait()
+        # Creating the response object
+        response = ReferenceNameResponse()
+        # Responding with the name of the reference ontology
         response.name = self._onto_ref_name
         return response
 
@@ -172,6 +202,9 @@ class OntologyMapBuilder(object):
         It checks that the requested room_name is valid and then fills the
         response with the position for the requested room.
         '''
+        # Making the client wait until the map is built
+        if not self._building_complete :
+            self._building_complete_event.wait()
         # Creating the response object
         response = RoomPositionResponse()
         # Filling the fields of the response

@@ -8,8 +8,20 @@ from robot_state_msgs.msg import ComputePathAction, ComputePathResult
 from geometry_msgs.msg import Point
 
 class PlannerController():
-
+    '''
+    Creates an action server for:
+        - /compute_path (ComputePathAction)
+    
+    This ROS Node creates a plan composed by waypoints that the robot has
+    to follow in order to reach the goal position. In this simple case, the
+    plan is composed by just the goal position.
+    '''
     def __init__(self):
+        '''
+        |  In the constructor method, this class:
+        |  1. Creates the /planner_controller action server.
+        |  2. Starts the server.
+        '''
         # Creating a ROS Node.
         rospy.init_node('planner_controller', log_level=rospy.INFO)
         # Creating an ActionServer to compute a plan.
@@ -21,6 +33,15 @@ class PlannerController():
 
 
     def _compute_path(self, action):
+        '''
+        Args:
+            action (ComputePathGoal) : the position the robot has to reach.
+
+        This is the callback for the /planner_controller action server.
+        In this simple example the path, which is normally composed by waypoint
+        that the robot needs to follow in order to reach the requested goal, is
+        composed by just the goal position.
+        '''
         # The plan is just the the start and goal positions.
         # This planner should be used to compute high-level paths when
         # dealing with really big environments. In this case we are in
