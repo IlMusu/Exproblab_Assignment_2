@@ -24,25 +24,25 @@ The <b>Open Source Computer Vision (OpenCV)</b> library is a free and open-sourc
 
 ### Environment
 In the following it shown an image of the environment the robot is placed in.
-<p align="center">
+<center>
 	<img src="https://i.imgur.com/yVivSbS.png" width="80%">
-</p>
+</center>
 
 ### Robot
 The robot used in the simulation is a differential robot equipped with a simple robotic arm with only two joints, a camera placed at the end-effector and a laser scanner. The following image shows the rendering of robot.
-<p align="center">
+<center>
 	<img src="https://i.imgur.com/dq6hsQy.jpg" width="80%">
-</p>
+</center>
 
 ### Markers
 In the following images are shown the types and placement of the markers that have been used in the simulation: as can be seen, all the markers are in the same location. The robot will be spawned at the center of that location so that it can identify all the markers by just controlling the joints of the robotic arm.
-<p align="center">
+<center>
 	<img src="https://i.imgur.com/aR28QNP.jpg" width="80%">
-</p>
+</center>
 Another image of the same location from a different perspective:
-<p align="center">
+<center>
 	<img src="https://i.imgur.com/asekuqh.jpg" width="80%">
-</p>
+</center>
 
 ## 2. INSTALLATION AND RUNNING
 ### Installation
@@ -84,3 +84,7 @@ roslaunch final_assignment simulation_enviornment.launch
 roslaunch final_assignment armor_builder.launch
 roslaunch final_assignment robot_surveillance.launch
 ```
+
+<p align="center">
+<img src=https://github.com/IlMusu/Exproblab_Assignment_2/blob/documentation/images/components_diagram.svg?raw=true">
+</p>
