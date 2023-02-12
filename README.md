@@ -108,18 +108,15 @@ In the  <b>component diagram</b>  are shown all the  <b>blocks</b>  and  <b>inte
    - The `marker_detector` node through the <b>/ontology_map/build_map</b> action.
    - The `robot_behavior` node through the <b>/ontology_map/reference_name</b> service.  
    - The `robot_behavior` node through the <b>/ontology_map/room_position</b> service.  
-- The `robot_behavior` node contains the state machine that describes the desired behavior of the robot. The functionality of this node is based on the interaction with other nodes. In particular, it interacts with:  
-  - The `ontology_map_builder` node through the <b>/ontology_map/reference_name</b> service.  
-  - The `ontology_map_builder` node through the <b>/ontology_map/room_position</b> service.  
-  - The `armor_service` library through the <b>/armor_interface_srv</b> service.  
-  - The `battery_controller` node through the <b>/battery_level</b> message.  
-  - The `planner_controller` node through the <b>/compute_path</b> action.  
-  - The `motion_controller` node through the <b>/follow_path</b> action.  
-- The `battery_controller` node controls the level of the battery. It interacts with:  
-  - The `robot_behaviour` node through the <b>/battery_level</b> message.  
-- The `planner_controller` node constructs a path between two points. It interacts with:  
-  - The `robot_behaviour` node through the <b>/compute_path</b> message.  
 - The `motion_controller` node controls the movement of the robot. It interacts with:  
-  - The `robot_behaviour` node through the <b>/follow_path</b> message.  
+  - The `robot_behaviour` node through the <b>/follow_path</b> message. 
+  - The `move_base` node through the <b>/move_base</b> action. 
+- The `move_base` node makes the robot move to a goal pose. It interacts with:
+	- The `motion_controller` node through the <b>/move_base</b> action. 
 
+The remaining nodes of the architecture are explained in the <b>[README](https://github.com/IlMusu/Exproblab_Assignment_1)</b> of the previous assignment.
 A more detailed explanation of the use of the interfaces is available <b>[here](#ros-messages-services-and-actions)</b>.  
+
+### Sequence Diagram
+This <b>sequence diagram</b> shows a possible execution of the software contained in this repository. More in details, this diagram shows the execution in time of all the nodes and the requests/responses between them.
+Notice that this diagram only shows the beginning of the execution, ence, the detection of the ArUco markers and the building of the ontology. That is because the remaining part of the diagram is the same shown in the <b>[README](https://github.com/IlMusu/Exproblab_Assignment_1)</b> of the previous assignment.
