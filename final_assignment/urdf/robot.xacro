@@ -148,7 +148,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
       <geometry>
-        <box size="0.08 0.08 0.08"/>
+        <box size="0.10 0.10 0.10"/>
       </geometry>
       <material name="green"/>
     </visual>
@@ -178,7 +178,7 @@
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0.15"/>
       <geometry>
-        <box size="0.05 0.05 0.2"/>
+        <box size="0.05 0.05 0.3"/>
       </geometry>
       <material name="green"/>
     </visual>
