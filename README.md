@@ -38,11 +38,11 @@ The robot used in the simulation is a differential robot equipped with a simple 
 The robot description is located in <b>[this](https://github.com/IlMusu/Exproblab_Assignment_2/tree/master/final_assignment/urdf)</b> folder.
 
 ### Markers
-In the following images are shown the types and placement of the markers that have been used in the simulation: as can be seen, all the markers are in the same location. The robot will be spawned at the center of that location so that it can identify all the markers by just controlling the joints of the robotic arm.
+In the following images are shown the types and placement of the markers that have been used in the simulation: as can be seen, all the markers are in the same location. The robot will be spawned at the center of that location so that it can identify all the markers by just controlling the joints of the robotic arm.  
 <p align="center">
 	<img src="https://i.imgur.com/aR28QNP.jpg" width="80%">
 </p>
-Another image of the same location from a different perspective:
+Another image of the same location from a different perspective:  
 <p align="center">
 	<img src="https://i.imgur.com/asekuqh.jpg" width="80%">
 </p>
@@ -153,7 +153,7 @@ In this second gif instead, it is possible to observe that, after all the marker
 
 ## 5. FUTURE WORK
 These are some of the possible improvements that can be carried on this project:
-   - The `armor_service` library through the <b>/armor_interface_srv</b> service.  
+   - Currently the robotic arm placed on the robot chassis moves almost instantly from one configuration to another, this causes some problems with the physics simulation. A solution to this problem might be to better tune the parametes, use a different PID controller, or to use another type controller for the arm. 
    - The `marker_detector` node through the <b>/ontology_map/build_map</b> action.
    - The `robot_behavior` node through the <b>/ontology_map/reference_name</b> service.  
    - The `robot_behavior` node through the <b>/ontology_map/room_position</b> service.  
