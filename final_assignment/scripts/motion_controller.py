@@ -104,7 +104,7 @@ class MotionController():
             # Sending the goal to the move_base server.
             self._move_acl.send_goal(goal)
             # Waiting until the robot is arrived at destination.
-            self._wait_until_robot_at_goal()
+            self._wait_until_robot_at_pose(pose)
                 
             # Canceling the goal if not completed.
             if self._move_acl.simple_state != SimpleGoalState.DONE:
@@ -125,8 +125,11 @@ class MotionController():
             self._follow_asv.set_aborted(result)
 
 
-    def _wait_until_robot_at_goal(self):
+    def _wait_until_robot_at_pose(self, pose):
         '''
+        Args:
+            pose (Point): the pose position.
+        
         This function blocks the execution until the robot is arrived at destination
         which might happen because of two reasons: the first one is that move_base
         completes the execution of the action, the second one is because the distance
@@ -146,15 +149,15 @@ class MotionController():
 
 
     
-    def _compute_robot_distance(self, goal):
+    def _compute_robot_distance(self, pose):
         '''
         Args:
-            goal (Point) : the goal position.
+            pose (Point) : the goal position.
         
         Computes the distance between the robot and the goal.
         '''
-        dx = self._robot_position.x-goal.x
-        dy = self._robot_position.y-goal.y
+        dx = self._robot_position.x-pose.x
+        dy = self._robot_position.y-pose.y
         return math.sqrt(dx*dx + dy*dy)
 
 

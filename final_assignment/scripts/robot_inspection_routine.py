@@ -81,16 +81,16 @@ class RobotInspectionRoutine():
         rospy.loginfo("[INSPECTION ROUTINE] Starting a new inspection routine!")
         # Initially setting the rotation all to one side
         self._rotate_arm_joint_at(self._joint1_pub, 0.0)
-        self._rotate_arm_joint_smoothly(self._joint0_pub, 0.05, 0.0, -3.1)
+        self._rotate_arm_joint_smoothly(self._joint0_pub, 0.1, 0.0, -3.1)
         # Rotate camera down and 360 deg
         self._rotate_arm_joint_at(self._joint2_pub, 0.3)
-        self._rotate_arm_joint_smoothly(self._joint0_pub, 0.03, -3.1, 3.1)
+        self._rotate_arm_joint_smoothly(self._joint0_pub, 0.1, -3.1, 3.1)
         # Rotate camera a little up and -360 deg
-        self._rotate_arm_joint_at(self._joint2_pub, -0.8)
-        self._rotate_arm_joint_smoothly(self._joint0_pub, 0.03, 3.1, -3.1)
+        self._rotate_arm_joint_at(self._joint2_pub, -0.65)
+        self._rotate_arm_joint_smoothly(self._joint0_pub, 0.1, 3.1, -3.1)
         # Returning to the initial position
         self._rotate_arm_joint_at(self._joint2_pub, 0.0)
-        self._rotate_arm_joint_smoothly(self._joint0_pub, 0.05, -3.1, 0.0)
+        self._rotate_arm_joint_smoothly(self._joint0_pub, 0.1, -3.1, 0.0)
         
         # Publishing the result
         result = RobotInspectionRoutineResult()
@@ -139,7 +139,7 @@ class RobotInspectionRoutine():
         control = Float64()
         control.data = value
         pub.publish(control)
-        rospy.sleep(rospy.Duration(0.1))
+        rospy.sleep(rospy.Duration(0.2))
         
 
 if __name__ == "__main__" :
