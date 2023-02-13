@@ -86,22 +86,22 @@
 
 <div class="viewcode-block" id="MotionController"><a class="viewcode-back" href="../../index.html#scripts.motion_controller.MotionController">[docs]</a><span class="k">class</span> <span class="nc">MotionController</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
-<span class="sd">    Creates an action client for:</span>
+<span class="sd">    Creates action clients for:</span>
 <span class="sd">        - /move_base (MoveBaseAction)</span>
-<span class="sd">    Creates an action server for:</span>
+<span class="sd">    Creates action servers for:</span>
 <span class="sd">        - /follow_path (FollowPathAction)</span>
 <span class="sd">    Subscribes to topics:</span>
 <span class="sd">        - /odom (Odometry)</span>
 <span class="sd">    ROS Parameters :</span>
-<span class="sd">        - /goal_threshold (float) : The distance from goal at which the robot is</span>
-<span class="sd">            considered to be arrived at goal.</span>
+<span class="sd">        - /goal_threshold (float) : The distance from goal at which the </span>
+<span class="sd">            robot is considered to be arrived at goal.</span>
 <span class="sd">    </span>
-<span class="sd">    This Ros Node makes the robot follow a path composed by waypoints.</span>
-<span class="sd">    The actual movements between the waypoints is perfomed through move_base.</span>
-<span class="sd">    Sometimes the robot gets stuck just before reaching the requested goal,</span>
-<span class="sd">    because of this reason, this node checks the distance from the robot and</span>
-<span class="sd">    the current goal position and interrupts move_base when the distance is</span>
-<span class="sd">    under the user defined threshold.</span>
+<span class="sd">    This ROS node makes the robot follow a path composed of waypoints. </span>
+<span class="sd">    The actual movements between waypoints are performed using move_base. </span>
+<span class="sd">    Sometimes the robot gets stuck just before reaching the desired goal. </span>
+<span class="sd">    To address this, the node checks the distance between the robot and </span>
+<span class="sd">    the current goal position and interrupts move_base when the distance </span>
+<span class="sd">    is below the user-defined threshold.</span>
 <span class="sd">    &#39;&#39;&#39;</span>
 <div class="viewcode-block" id="MotionController.__init__"><a class="viewcode-back" href="../../index.html#scripts.motion_controller.MotionController.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
@@ -150,13 +150,13 @@
 <span class="sd">        Args:</span>
 <span class="sd">            action (FollowPathGoal) : the requested path to follow.</span>
 <span class="sd">        </span>
-<span class="sd">        | This is the callback for the /follow_path action server:</span>
-<span class="sd">        | 1. Waits until the move_base action server is available.</span>
-<span class="sd">        | 2. For each waypoint inside the requested path:</span>
-<span class="sd">        |  3. Creates a MoveBaseAction containing the waypoint as goal.</span>
-<span class="sd">        |  4. Sends the goal the move_base action server.</span>
-<span class="sd">        |  5. Waits until the robot is arried at the waypoint.</span>
-<span class="sd">        | 6. Creates and publishes the results.</span>
+<span class="sd">        This is the callback for the /follow_path action server.</span>
+<span class="sd">        First, it waits until the move_base action server is ready. </span>
+<span class="sd">        Then, for each waypoint in the requested path, it creates a </span>
+<span class="sd">        MoveBaseAction with the waypoint as the goal. The goal is </span>
+<span class="sd">        sent to the move_base action server and it waits until the</span>
+<span class="sd">        robot arrives at the waypoint. Finally, the results containing</span>
+<span class="sd">        the current robot position are created and published.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># Waiting until move_base exists.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_move_acl</span><span class="o">.</span><span class="n">wait_for_server</span><span class="p">()</span>

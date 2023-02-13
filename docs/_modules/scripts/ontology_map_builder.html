@@ -194,11 +194,11 @@
 <span class="sd">            rooms_doors (list) : At index i, the list of doors belonging to room i.</span>
 <span class="sd">            rooms_positions (list) : At index i, the position of room i.</span>
 <span class="sd">        </span>
-<span class="sd">        |  This method creates the map specified by the user:</span>
-<span class="sd">        |  1. Loads the default ontology into the ARMOR server.</span>
-<span class="sd">        |  2. Decodes the description of the map and builds it.</span>
-<span class="sd">        |  3. Disjoints the necessary individuals on the ontology</span>
-<span class="sd">        |  4. Organizes the rooms positions into a map.</span>
+<span class="sd">        This method builds the ontology from the parameters.</span>
+<span class="sd">        First, it loads the default ontology into the ARMOR server. </span>
+<span class="sd">        Then, it decodes the description of the map and builds it. </span>
+<span class="sd">        Next, it separates the necessary individuals in the ontology. </span>
+<span class="sd">        Finally, it arranges the positions of the rooms into a map.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># Check if the map is already build</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_building_complete</span> <span class="p">:</span>

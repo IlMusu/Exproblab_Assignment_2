@@ -85,7 +85,7 @@
 <span class="sd">        - /joint0_position_controller/command (Float64)</span>
 <span class="sd">        - /joint1_position_controller/command (Float64)</span>
 <span class="sd">        - /camera_position_controller/command (Float64)</span>
-<span class="sd">    Creates an action server for:</span>
+<span class="sd">    Creates action servers for:</span>
 <span class="sd">        - /robot_inspection_routine (RobotInspectionRoutineAction)</span>
 <span class="sd">    </span>
 <span class="sd">    This ROS Node makes the arm of the robot rotate in circular patters.</span>
@@ -131,13 +131,13 @@
 <span class="sd">        | This is the callback for the /robot_inspection_routine action server:</span>
 <span class="sd">        | 1. If the routine is already taking place:</span>
 <span class="sd">        |  2. Sends the result as failed.</span>
-<span class="sd">        | 2. Makes the first joint rotate to -pi.</span>
-<span class="sd">        | 3. Makes the camera joint to 0.3.</span>
-<span class="sd">        | 4. Makes the first joint rotate to pi.</span>
-<span class="sd">        | 5. Makes the camera rotate to -0.8.</span>
-<span class="sd">        | 6. Makes the first joint rotate to -pi.</span>
-<span class="sd">        | 7. Resets the joint positions.</span>
-<span class="sd">        | 8. Sends the result as success.</span>
+<span class="sd">        | 3. Makes the first joint rotate to -pi.</span>
+<span class="sd">        | 4. Makes the camera joint to 0.3.</span>
+<span class="sd">        | 5. Makes the first joint rotate to pi.</span>
+<span class="sd">        | 6. Makes the camera rotate to -0.8.</span>
+<span class="sd">        | 7. Makes the first joint rotate to -pi.</span>
+<span class="sd">        | 8. Resets the joint positions.</span>
+<span class="sd">        | 9. Sends the result as success.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># Check if the robot is already inspecting</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_inspecting</span> <span class="p">:</span>
@@ -153,11 +153,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint1_pub</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">)</span>
         <span class="c1"># Rotate camera down and 360 deg</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">rospy</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
         <span class="c1"># Rotate camera a little up and -360 deg</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.65</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">3.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">)</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">rospy</span><span class="o">.</span><span class="n">Duration</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))</span>
         <span class="c1"># Returning to the initial position</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_at</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint2_pub</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rotate_arm_joint_smoothly</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_joint0_pub</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="o">-</span><span class="mf">3.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>

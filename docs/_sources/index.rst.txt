@@ -20,6 +20,21 @@ Indices and tables
 * :ref:`search`
 
 
+Marker Detector
+================================
+.. automodule:: scripts.marker_detector
+    :members:
+    :special-members:
+    :private-members:
+
+
+Robot Inspection Routine
+================================
+.. automodule:: scripts.robot_inspection_routine
+    :members:
+    :special-members:
+    :private-members:
+
 Ontology Map Builder Module
 ================================
 .. automodule:: scripts.ontology_map_builder
@@ -37,14 +52,6 @@ Motion Controller
 Planner Controller
 ================================
 .. automodule:: scripts.planner_controller
-    :members:
-    :special-members:
-    :private-members:
-
-
-Robot Inspection Routine
-================================
-.. automodule:: scripts.robot_inspection_routine
     :members:
     :special-members:
     :private-members:

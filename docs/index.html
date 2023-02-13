@@ -45,6 +45,28 @@
               <div class="local-toc"><ul>
 <li><a class="reference internal" href="#">Welcome to exprob_assignment_2’s documentation!</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#module-scripts.marker_detector">Marker Detector</a><ul>
+<li><a class="reference internal" href="#scripts.marker_detector.MarkerDetector"><code class="docutils literal notranslate"><span class="pre">MarkerDetector</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.marker_detector.MarkerDetector.__init__"><code class="docutils literal notranslate"><span class="pre">MarkerDetector.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.marker_detector.MarkerDetector.__weakref__"><code class="docutils literal notranslate"><span class="pre">MarkerDetector.__weakref__</span></code></a></li>
+<li><a class="reference internal" href="#scripts.marker_detector.MarkerDetector._image_callback"><code class="docutils literal notranslate"><span class="pre">MarkerDetector._image_callback()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.marker_detector.MarkerDetector._look_for_aruco_markers"><code class="docutils literal notranslate"><span class="pre">MarkerDetector._look_for_aruco_markers()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.marker_detector.MarkerDetector._retrieve_rooms_information"><code class="docutils literal notranslate"><span class="pre">MarkerDetector._retrieve_rooms_information()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#module-scripts.robot_inspection_routine">Robot Inspection Routine</a><ul>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine</span></code></a><ul>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__init__"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine.__weakref__</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._on_inspection_request()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._rotate_arm_joint_at()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._rotate_arm_joint_smoothly()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#module-scripts.ontology_map_builder">Ontology Map Builder Module</a><ul>
 <li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder</span></code></a><ul>
 <li><a class="reference internal" href="#scripts.ontology_map_builder.OntologyMapBuilder.__init__"><code class="docutils literal notranslate"><span class="pre">OntologyMapBuilder.__init__()</span></code></a></li>
@@ -75,17 +97,6 @@
 <li><a class="reference internal" href="#scripts.planner_controller.PlannerController.__init__"><code class="docutils literal notranslate"><span class="pre">PlannerController.__init__()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.planner_controller.PlannerController.__weakref__"><code class="docutils literal notranslate"><span class="pre">PlannerController.__weakref__</span></code></a></li>
 <li><a class="reference internal" href="#scripts.planner_controller.PlannerController._compute_path"><code class="docutils literal notranslate"><span class="pre">PlannerController._compute_path()</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a class="reference internal" href="#module-scripts.robot_inspection_routine">Robot Inspection Routine</a><ul>
-<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine</span></code></a><ul>
-<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__init__"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine.__init__()</span></code></a></li>
-<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine.__weakref__</span></code></a></li>
-<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._on_inspection_request()</span></code></a></li>
-<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._rotate_arm_joint_at()</span></code></a></li>
-<li><a class="reference internal" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly"><code class="docutils literal notranslate"><span class="pre">RobotInspectionRoutine._rotate_arm_joint_smoothly()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -128,6 +139,196 @@
 <li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
+</div>
+<div class="section" id="module-scripts.marker_detector">
+<span id="marker-detector"></span><h1>Marker Detector<a class="headerlink" href="#module-scripts.marker_detector" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.marker_detector.MarkerDetector">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.marker_detector.</span></span><span class="sig-name descname"><span class="pre">MarkerDetector</span></span><a class="reference internal" href="_modules/scripts/marker_detector.html#MarkerDetector"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.marker_detector.MarkerDetector" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Subscribes to topics:</dt><dd><ul class="simple">
+<li><p>/camera/image_raw (Image)</p></li>
+</ul>
+</dd>
+<dt>Publishes to topics:</dt><dd><ul class="simple">
+<li><p>/cmd_vel (Twist)</p></li>
+<li><p>/ontology_map/build_map (OntologyMap)</p></li>
+</ul>
+</dd>
+<dt>Requires services on:</dt><dd><ul class="simple">
+<li><p>/room_info (RoomInformation)</p></li>
+</ul>
+</dd>
+<dt>Creates action clients for:</dt><dd><ul class="simple">
+<li><p>/robot_inspection_routine (RobotInspectionRoutine)</p></li>
+</ul>
+</dd>
+<dt>ROS Parameters :</dt><dd><ul class="simple">
+<li><p>/markers_count (int) : The number of markers to detect.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This ROS node makes the robot detect the specified number of ArUco
+markers that are located around it. To accomplish this, it sends a
+goal to the /robot_inspection_routine action server, which causes
+the robot arm to rotate in circular patterns. Once the inspection
+routine is completed, it obtains information about the markers that
+it has detected using the /room_info service. These steps are
+repeated until all markers have been detected. Finally, it computes
+a new OntologyMap message containing all the necessary information
+about the ontology and publishes it.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.marker_detector.MarkerDetector.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/marker_detector.html#MarkerDetector.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.marker_detector.MarkerDetector.__init__" title="Permalink to this definition"></a></dt>
+<dd><div class="line-block">
+<div class="line">In the constructor method, this class:</div>
+<div class="line">1. Creates a subscriber for the “/camera/image_raw” topic.</div>
+<div class="line">2. Creates a publisher for the “/cmd_vel” topic.</div>
+<div class="line">3. Creates a publisher for the “/ontology_map/build_map/” topic.</div>
+<div class="line">4. Creates a service client for the “/room_info” service.</div>
+<div class="line">5. Creates an action client for the “/robot_inspection_routine” action.</div>
+<div class="line">6. Finally, it starts to look for ArUco markers.</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scripts.marker_detector.MarkerDetector.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#scripts.marker_detector.MarkerDetector.__weakref__" title="Permalink to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.marker_detector.MarkerDetector._image_callback">
+<span class="sig-name descname"><span class="pre">_image_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/marker_detector.html#MarkerDetector._image_callback"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.marker_detector.MarkerDetector._image_callback" title="Permalink to this definition"></a></dt>
+<dd><p>This is the callback for the /camera/image_raw topic.
+When a new image message is available, this method encodes it using cv_bridge.
+Then, dectects any eventual the ArUco markers in the image using the
+apposite function. The dected markers id are not ignored if there are not
+already validated or are not already found.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.marker_detector.MarkerDetector._look_for_aruco_markers">
+<span class="sig-name descname"><span class="pre">_look_for_aruco_markers</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/marker_detector.html#MarkerDetector._look_for_aruco_markers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.marker_detector.MarkerDetector._look_for_aruco_markers" title="Permalink to this definition"></a></dt>
+<dd><p>This method is used for detecting ArUco markers. It starts by setting a
+low velocity for the robot so that it remains stationary while searching
+for markers. After the /robot_inspection_routine action server is detected
+and until all the markers are correctly detected, a goal is sent to it,
+and the completion is awaited. When all the markers are correctly detected,
+a new message is published on the /ontology_map/build_map channel with
+information about the ontology.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.marker_detector.MarkerDetector._retrieve_rooms_information">
+<span class="sig-name descname"><span class="pre">_retrieve_rooms_information</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/marker_detector.html#MarkerDetector._retrieve_rooms_information"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.marker_detector.MarkerDetector._retrieve_rooms_information" title="Permalink to this definition"></a></dt>
+<dd><p>This method is called when new ArUco markers ids are detected and
+the related information needs to be obtained. In order to do this,
+it calls the /room_info service for each detected id.
+If the id, was valid, adds the information to the OntologyMap
+message, adds the id to the list of “validated markers”.
+Finally, it clears the list of detected markers.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-scripts.robot_inspection_routine">
+<span id="robot-inspection-routine"></span><h1>Robot Inspection Routine<a class="headerlink" href="#module-scripts.robot_inspection_routine" title="Permalink to this heading"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.robot_inspection_routine.</span></span><span class="sig-name descname"><span class="pre">RobotInspectionRoutine</span></span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine" title="Permalink to this definition"></a></dt>
+<dd><dl class="simple">
+<dt>Publishes to the topics:</dt><dd><ul class="simple">
+<li><p>/joint0_position_controller/command (Float64)</p></li>
+<li><p>/joint1_position_controller/command (Float64)</p></li>
+<li><p>/camera_position_controller/command (Float64)</p></li>
+</ul>
+</dd>
+<dt>Creates action servers for:</dt><dd><ul class="simple">
+<li><p>/robot_inspection_routine (RobotInspectionRoutineAction)</p></li>
+</ul>
+</dd>
+</dl>
+<p>This ROS Node makes the arm of the robot rotate in circular patters.
+This behavior is achieved by subscribing to the topics of each joint
+of the arm and manually setting the angle values.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__init__" title="Permalink to this definition"></a></dt>
+<dd><div class="line-block">
+<div class="line">In the constructor method, this class:</div>
+<div class="line">1. Creates a subscriber for the “/joint0_position_controller/command” topic.</div>
+<div class="line">2. Creates a subscriber for the “/joint1_position_controller/command” topic.</div>
+<div class="line">3. Creates a subscriber for the “/camera_position_controller/command” topic.</div>
+<div class="line">4. Creates an action server for the “/robot_inspection_routine” action.</div>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__" title="Permalink to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request">
+<span class="sig-name descname"><span class="pre">_on_inspection_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._on_inspection_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>action</strong> (<em>RobotInspectionRoutineGoal</em>) – the goal.</p>
+</dd>
+</dl>
+<div class="line-block">
+<div class="line">This is the callback for the /robot_inspection_routine action server:</div>
+<div class="line">1. If the routine is already taking place:</div>
+<div class="line-block">
+<div class="line">2. Sends the result as failed.</div>
+</div>
+<div class="line">3. Makes the first joint rotate to -pi.</div>
+<div class="line">4. Makes the camera joint to 0.3.</div>
+<div class="line">5. Makes the first joint rotate to pi.</div>
+<div class="line">6. Makes the camera rotate to -0.8.</div>
+<div class="line">7. Makes the first joint rotate to -pi.</div>
+<div class="line">8. Resets the joint positions.</div>
+<div class="line">9. Sends the result as success.</div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at">
+<span class="sig-name descname"><span class="pre">_rotate_arm_joint_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._rotate_arm_joint_at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pub</strong> (<em>Publisher</em>) – the publisher for the joint controller.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the value for the new configuration of the joint.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This method makes the arm joint of the robot rotate to the
+requested configuration by publishing the value on the topic.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly">
+<span class="sig-name descname"><span class="pre">_rotate_arm_joint_smoothly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._rotate_arm_joint_smoothly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pub</strong> (<em>Publisher</em>) – the publisher for the joint controller.</p></li>
+<li><p><strong>delta</strong> (<em>float</em>) – the increment used to update the value at each iteration.</p></li>
+<li><p><strong>value</strong> (<em>float</em>) – the value for the current configuration of the joint.</p></li>
+<li><p><strong>target_value</strong> (<em>float</em>) – the value for the target configuration of the joint.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This method makes the arm joint of the robot rotate by incrementing the value
+of the configuration with a delta at each iteration.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="module-scripts.ontology_map_builder">
 <span id="ontology-map-builder-module"></span><h1>Ontology Map Builder Module<a class="headerlink" href="#module-scripts.ontology_map_builder" title="Permalink to this heading"></a></h1>
@@ -188,13 +389,11 @@ the position of room given the name.</p>
 </ul>
 </dd>
 </dl>
-<div class="line-block">
-<div class="line">This method creates the map specified by the user:</div>
-<div class="line">1. Loads the default ontology into the ARMOR server.</div>
-<div class="line">2. Decodes the description of the map and builds it.</div>
-<div class="line">3. Disjoints the necessary individuals on the ontology</div>
-<div class="line">4. Organizes the rooms positions into a map.</div>
-</div>
+<p>This method builds the ontology from the parameters.
+First, it loads the default ontology into the ARMOR server.
+Then, it decodes the description of the map and builds it.
+Next, it separates the necessary individuals in the ontology.
+Finally, it arranges the positions of the rooms into a map.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -264,11 +463,11 @@ response with the position for the requested room.</p>
 <dt class="sig sig-object py" id="scripts.motion_controller.MotionController">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.motion_controller.</span></span><span class="sig-name descname"><span class="pre">MotionController</span></span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController" title="Permalink to this definition"></a></dt>
 <dd><dl class="simple">
-<dt>Creates an action client for:</dt><dd><ul class="simple">
+<dt>Creates action clients for:</dt><dd><ul class="simple">
 <li><p>/move_base (MoveBaseAction)</p></li>
 </ul>
 </dd>
-<dt>Creates an action server for:</dt><dd><ul class="simple">
+<dt>Creates action servers for:</dt><dd><ul class="simple">
 <li><p>/follow_path (FollowPathAction)</p></li>
 </ul>
 </dd>
@@ -278,19 +477,19 @@ response with the position for the requested room.</p>
 </dd>
 <dt>ROS Parameters :</dt><dd><ul class="simple">
 <li><dl class="simple">
-<dt>/goal_threshold (float)<span class="classifier">The distance from goal at which the robot is</span></dt><dd><p>considered to be arrived at goal.</p>
+<dt>/goal_threshold (float)<span class="classifier">The distance from goal at which the</span></dt><dd><p>robot is considered to be arrived at goal.</p>
 </dd>
 </dl>
 </li>
 </ul>
 </dd>
 </dl>
-<p>This Ros Node makes the robot follow a path composed by waypoints.
-The actual movements between the waypoints is perfomed through move_base.
-Sometimes the robot gets stuck just before reaching the requested goal,
-because of this reason, this node checks the distance from the robot and
-the current goal position and interrupts move_base when the distance is
-under the user defined threshold.</p>
+<p>This ROS node makes the robot follow a path composed of waypoints.
+The actual movements between waypoints are performed using move_base.
+Sometimes the robot gets stuck just before reaching the desired goal.
+To address this, the node checks the distance between the robot and
+the current goal position and interrupts move_base when the distance
+is below the user-defined threshold.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.motion_controller.MotionController.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController.__init__" title="Permalink to this definition"></a></dt>
@@ -327,17 +526,13 @@ under the user defined threshold.</p>
 <dd class="field-odd"><p><strong>action</strong> (<em>FollowPathGoal</em>) – the requested path to follow.</p>
 </dd>
 </dl>
-<div class="line-block">
-<div class="line">This is the callback for the /follow_path action server:</div>
-<div class="line">1. Waits until the move_base action server is available.</div>
-<div class="line">2. For each waypoint inside the requested path:</div>
-<div class="line-block">
-<div class="line">3. Creates a MoveBaseAction containing the waypoint as goal.</div>
-<div class="line">4. Sends the goal the move_base action server.</div>
-<div class="line">5. Waits until the robot is arried at the waypoint.</div>
-</div>
-<div class="line">6. Creates and publishes the results.</div>
-</div>
+<p>This is the callback for the /follow_path action server.
+First, it waits until the move_base action server is ready.
+Then, for each waypoint in the requested path, it creates a
+MoveBaseAction with the waypoint as the goal. The goal is
+sent to the move_base action server and it waits until the
+robot arrives at the waypoint. Finally, the results containing
+the current robot position are created and published.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -375,7 +570,7 @@ between the robot and the goal is less than the /goal_threshold parameter.</p>
 <dt class="sig sig-object py" id="scripts.planner_controller.PlannerController">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.planner_controller.</span></span><span class="sig-name descname"><span class="pre">PlannerController</span></span><a class="reference internal" href="_modules/scripts/planner_controller.html#PlannerController"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.planner_controller.PlannerController" title="Permalink to this definition"></a></dt>
 <dd><dl class="simple">
-<dt>Creates an action server for:</dt><dd><ul class="simple">
+<dt>Creates action servers for:</dt><dd><ul class="simple">
 <li><p>/compute_path (ComputePathAction)</p></li>
 </ul>
 </dd>
@@ -388,7 +583,7 @@ plan is composed by just the goal position.</p>
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/planner_controller.html#PlannerController.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.planner_controller.PlannerController.__init__" title="Permalink to this definition"></a></dt>
 <dd><div class="line-block">
 <div class="line">In the constructor method, this class:</div>
-<div class="line">1. Creates the /planner_controller action server.</div>
+<div class="line">1. Creates the “/planner_controller” action server.</div>
 <div class="line">2. Starts the server.</div>
 </div>
 </dd></dl>
@@ -411,103 +606,6 @@ plan is composed by just the goal position.</p>
 In this simple example the path, which is normally composed by waypoint
 that the robot needs to follow in order to reach the requested goal, is
 composed by just the goal position.</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
-<div class="section" id="module-scripts.robot_inspection_routine">
-<span id="robot-inspection-routine"></span><h1>Robot Inspection Routine<a class="headerlink" href="#module-scripts.robot_inspection_routine" title="Permalink to this heading"></a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">scripts.robot_inspection_routine.</span></span><span class="sig-name descname"><span class="pre">RobotInspectionRoutine</span></span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine" title="Permalink to this definition"></a></dt>
-<dd><dl class="simple">
-<dt>Publishes to the topics:</dt><dd><ul class="simple">
-<li><p>/joint0_position_controller/command (Float64)</p></li>
-<li><p>/joint1_position_controller/command (Float64)</p></li>
-<li><p>/camera_position_controller/command (Float64)</p></li>
-</ul>
-</dd>
-<dt>Creates an action server for:</dt><dd><ul class="simple">
-<li><p>/robot_inspection_routine (RobotInspectionRoutineAction)</p></li>
-</ul>
-</dd>
-</dl>
-<p>This ROS Node makes the arm of the robot rotate in circular patters.
-This behavior is achieved by subscribing to the topics of each joint
-of the arm and manually setting the angle values.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__init__" title="Permalink to this definition"></a></dt>
-<dd><div class="line-block">
-<div class="line">In the constructor method, this class:</div>
-<div class="line">1. Creates a subscriber for the “/joint0_position_controller/command” topic.</div>
-<div class="line">2. Creates a subscriber for the “/joint1_position_controller/command” topic.</div>
-<div class="line">3. Creates a subscriber for the “/camera_position_controller/command” topic.</div>
-<div class="line">4. Creates an action server for the “/robot_inspection_routine” action.</div>
-</div>
-</dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__">
-<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine.__weakref__" title="Permalink to this definition"></a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request">
-<span class="sig-name descname"><span class="pre">_on_inspection_request</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._on_inspection_request"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._on_inspection_request" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>action</strong> (<em>RobotInspectionRoutineGoal</em>) – the goal.</p>
-</dd>
-</dl>
-<div class="line-block">
-<div class="line">This is the callback for the /robot_inspection_routine action server:</div>
-<div class="line">1. If the routine is already taking place:</div>
-<div class="line-block">
-<div class="line">2. Sends the result as failed.</div>
-</div>
-<div class="line">2. Makes the first joint rotate to -pi.</div>
-<div class="line">3. Makes the camera joint to 0.3.</div>
-<div class="line">4. Makes the first joint rotate to pi.</div>
-<div class="line">5. Makes the camera rotate to -0.8.</div>
-<div class="line">6. Makes the first joint rotate to -pi.</div>
-<div class="line">7. Resets the joint positions.</div>
-<div class="line">8. Sends the result as success.</div>
-</div>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at">
-<span class="sig-name descname"><span class="pre">_rotate_arm_joint_at</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._rotate_arm_joint_at"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_at" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pub</strong> (<em>Publisher</em>) – the publisher for the joint controller.</p></li>
-<li><p><strong>value</strong> (<em>float</em>) – the value for the new configuration of the joint.</p></li>
-</ul>
-</dd>
-</dl>
-<p>This method makes the arm joint of the robot rotate to the
-requested configuration by publishing the value on the topic.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly">
-<span class="sig-name descname"><span class="pre">_rotate_arm_joint_smoothly</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pub</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/robot_inspection_routine.html#RobotInspectionRoutine._rotate_arm_joint_smoothly"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.robot_inspection_routine.RobotInspectionRoutine._rotate_arm_joint_smoothly" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>pub</strong> (<em>Publisher</em>) – the publisher for the joint controller.</p></li>
-<li><p><strong>delta</strong> (<em>float</em>) – the increment used to update the value at each iteration.</p></li>
-<li><p><strong>value</strong> (<em>float</em>) – the value for the current configuration of the joint.</p></li>
-<li><p><strong>target_value</strong> (<em>float</em>) – the value for the target configuration of the joint.</p></li>
-</ul>
-</dd>
-</dl>
-<p>This method makes the arm joint of the robot rotate by incrementing the value
-of the configuration with a delta at each iteration.</p>
 </dd></dl>
 
 </dd></dl>

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts.marker_detector &mdash; exprob_assignment_2  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            exprob_assignment_2
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">exprob_assignment_2</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scripts.marker_detector</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scripts.marker_detector</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python</span>
+
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">import</span> <span class="nn">cv2</span>
+<span class="kn">import</span> <span class="nn">cv2.aruco</span> <span class="k">as</span> <span class="nn">aruco</span>
+<span class="kn">import</span> <span class="nn">actionlib</span>
+
+<span class="kn">from</span> <span class="nn">actionlib</span> <span class="kn">import</span> <span class="n">SimpleGoalState</span>
+<span class="kn">from</span> <span class="nn">cv_bridge</span> <span class="kn">import</span> <span class="n">CvBridge</span>
+
+<span class="kn">from</span> <span class="nn">sensor_msgs.msg</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="kn">from</span> <span class="nn">geometry_msgs.msg</span> <span class="kn">import</span> <span class="n">Twist</span>
+<span class="kn">from</span> <span class="nn">geometry_msgs.msg</span> <span class="kn">import</span> <span class="n">Point</span>
+<span class="kn">from</span> <span class="nn">final_assignment.srv</span> <span class="kn">import</span> <span class="n">RoomInformation</span>
+<span class="kn">from</span> <span class="nn">final_assignment.msg</span> <span class="kn">import</span> <span class="n">RoomConnection</span>
+<span class="kn">from</span> <span class="nn">final_assignment.msg</span> <span class="kn">import</span> <span class="n">RoomDoors</span>
+<span class="kn">from</span> <span class="nn">final_assignment.msg</span> <span class="kn">import</span> <span class="n">OntologyMap</span>
+<span class="kn">from</span> <span class="nn">final_assignment.msg</span> <span class="kn">import</span> <span class="n">RobotInspectionRoutineAction</span><span class="p">,</span> <span class="n">RobotInspectionRoutineGoal</span>
+
+
+<div class="viewcode-block" id="MarkerDetector"><a class="viewcode-back" href="../../index.html#scripts.marker_detector.MarkerDetector">[docs]</a><span class="k">class</span> <span class="nc">MarkerDetector</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    Subscribes to topics:</span>
+<span class="sd">        - /camera/image_raw (Image)</span>
+<span class="sd">    Publishes to topics:</span>
+<span class="sd">        - /cmd_vel (Twist)</span>
+<span class="sd">        - /ontology_map/build_map (OntologyMap)</span>
+<span class="sd">    Requires services on:</span>
+<span class="sd">        - /room_info (RoomInformation)</span>
+<span class="sd">    Creates action clients for:</span>
+<span class="sd">        - /robot_inspection_routine (RobotInspectionRoutine)</span>
+<span class="sd">    ROS Parameters :</span>
+<span class="sd">        - /markers_count (int) : The number of markers to detect.</span>
+<span class="sd">    </span>
+<span class="sd">    This ROS node makes the robot detect the specified number of ArUco </span>
+<span class="sd">    markers that are located around it. To accomplish this, it sends a </span>
+<span class="sd">    goal to the /robot_inspection_routine action server, which causes </span>
+<span class="sd">    the robot arm to rotate in circular patterns. Once the inspection </span>
+<span class="sd">    routine is completed, it obtains information about the markers that </span>
+<span class="sd">    it has detected using the /room_info service. These steps are </span>
+<span class="sd">    repeated until all markers have been detected. Finally, it computes </span>
+<span class="sd">    a new OntologyMap message containing all the necessary information </span>
+<span class="sd">    about the ontology and publishes it.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+<div class="viewcode-block" id="MarkerDetector.__init__"><a class="viewcode-back" href="../../index.html#scripts.marker_detector.MarkerDetector.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        |  In the constructor method, this class:</span>
+<span class="sd">        |  1. Creates a subscriber for the &quot;/camera/image_raw&quot; topic.</span>
+<span class="sd">        |  2. Creates a publisher for the &quot;/cmd_vel&quot; topic.</span>
+<span class="sd">        |  3. Creates a publisher for the &quot;/ontology_map/build_map/&quot; topic.</span>
+<span class="sd">        |  4. Creates a service client for the &quot;/room_info&quot; service.</span>
+<span class="sd">        |  5. Creates an action client for the &quot;/robot_inspection_routine&quot; action.</span>
+<span class="sd">        |  6. Finally, it starts to look for ArUco markers.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Initializing ROS Node</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s2">&quot;marker_detector&quot;</span><span class="p">)</span>
+        <span class="c1"># Initializing variables</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aruco_params</span> <span class="o">=</span>  <span class="n">aruco</span><span class="o">.</span><span class="n">DetectorParameters_create</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cv_bridge</span> <span class="o">=</span> <span class="n">CvBridge</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aruco_dict</span> <span class="o">=</span> <span class="n">aruco</span><span class="o">.</span><span class="n">Dictionary_get</span><span class="p">(</span><span class="n">aruco</span><span class="o">.</span><span class="n">DICT_ARUCO_ORIGINAL</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_detected_markers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validated_markers</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_map_msg</span> <span class="o">=</span> <span class="n">OntologyMap</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_markers_count</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="s2">&quot;~markers_count&quot;</span><span class="p">)</span>
+        <span class="c1"># Creating a Subscriber for the image topic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_sub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span>
+            <span class="s2">&quot;/camera/image_raw&quot;</span><span class="p">,</span> <span class="n">Image</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> 
+            <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_image_callback</span>
+        <span class="p">)</span>
+        <span class="c1"># Creating a Publisher for the robot velocity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vel_pub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span>
+            <span class="s2">&quot;/cmd_vel&quot;</span><span class="p">,</span> <span class="n">Twist</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">latch</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="c1"># Creating a Publisher for the ontology map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_map_pub</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Publisher</span><span class="p">(</span>
+            <span class="s2">&quot;/ontology_map/build_map&quot;</span><span class="p">,</span> <span class="n">OntologyMap</span><span class="p">,</span> <span class="n">queue_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">latch</span><span class="o">=</span><span class="kc">True</span>
+        <span class="p">)</span>
+        <span class="c1"># Creating a ServiceClient for the rooms information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_room_info_srv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">ServiceProxy</span><span class="p">(</span>
+            <span class="s2">&quot;/room_info&quot;</span><span class="p">,</span> <span class="n">RoomInformation</span>
+        <span class="p">)</span>
+        <span class="c1"># Creating an ActionClient for moving the robot arm</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arm_acl</span> <span class="o">=</span> <span class="n">actionlib</span><span class="o">.</span><span class="n">SimpleActionClient</span><span class="p">(</span>
+            <span class="s2">&quot;/robot_inspection_routine&quot;</span><span class="p">,</span> <span class="n">RobotInspectionRoutineAction</span>
+        <span class="p">)</span>
+        <span class="c1"># Starting to look for aruco markers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_look_for_aruco_markers</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="MarkerDetector._look_for_aruco_markers"><a class="viewcode-back" href="../../index.html#scripts.marker_detector.MarkerDetector._look_for_aruco_markers">[docs]</a>    <span class="k">def</span> <span class="nf">_look_for_aruco_markers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method is used for detecting ArUco markers. It starts by setting a </span>
+<span class="sd">        low velocity for the robot so that it remains stationary while searching </span>
+<span class="sd">        for markers. After the /robot_inspection_routine action server is detected</span>
+<span class="sd">        and until all the markers are correctly detected, a goal is sent to it, </span>
+<span class="sd">        and the completion is awaited. When all the markers are correctly detected, </span>
+<span class="sd">        a new message is published on the /ontology_map/build_map channel with </span>
+<span class="sd">        information about the ontology.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Setting the robot velocity very small in order to keep it still</span>
+        <span class="n">vel_msg</span> <span class="o">=</span> <span class="n">Twist</span><span class="p">()</span>
+        <span class="n">vel_msg</span><span class="o">.</span><span class="n">linear</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.001</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vel_pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="n">vel_msg</span><span class="p">)</span>
+        <span class="c1"># Waiting for the server to be available</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] Waiting for InspectionRoutine Server...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arm_acl</span><span class="o">.</span><span class="n">wait_for_server</span><span class="p">()</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] InspectionRoutine Server found!&quot;</span><span class="p">)</span>
+        <span class="c1"># Finding all the markers in the room</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_validated_markers</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_markers_count</span> <span class="p">:</span>
+            <span class="c1"># Creating a goal for the movement of the arm</span>
+            <span class="n">inspection_goal</span> <span class="o">=</span> <span class="n">RobotInspectionRoutineGoal</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arm_acl</span><span class="o">.</span><span class="n">send_goal</span><span class="p">(</span><span class="n">inspection_goal</span><span class="p">)</span>
+            <span class="c1"># Waiting for the arm movement to complete</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_arm_acl</span><span class="o">.</span><span class="n">wait_for_result</span><span class="p">()</span>
+            <span class="c1"># Check if the arm movement was complete</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arm_acl</span><span class="o">.</span><span class="n">get_result</span><span class="p">()</span><span class="o">.</span><span class="n">completed</span> <span class="p">:</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] Inspection routine was not executed!&quot;</span><span class="p">)</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">logwarn</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] Waiting for a bit and then retrying!&quot;</span><span class="p">)</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="c1"># Retrieving all the rooms information</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_retrieve_rooms_information</span><span class="p">()</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] Validated &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_validated_markers</span><span class="p">))</span><span class="o">+</span><span class="s2">&quot; markers!&quot;</span><span class="p">)</span>
+        <span class="c1"># Stopping the subscriber for the camera image</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_image_sub</span><span class="o">.</span><span class="n">unregister</span><span class="p">()</span>
+        <span class="c1"># Publishing the ontology map</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_onto_map_pub</span><span class="o">.</span><span class="n">publish</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_onto_map_msg</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="MarkerDetector._image_callback"><a class="viewcode-back" href="../../index.html#scripts.marker_detector.MarkerDetector._image_callback">[docs]</a>    <span class="k">def</span> <span class="nf">_image_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This is the callback for the /camera/image_raw topic.</span>
+<span class="sd">        When a new image message is available, this method encodes it using cv_bridge.</span>
+<span class="sd">        Then, dectects any eventual the ArUco markers in the image using the</span>
+<span class="sd">        apposite function. The dected markers id are not ignored if there are not</span>
+<span class="sd">        already validated or are not already found.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Encoding the image using cv</span>
+        <span class="n">image</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cv_bridge</span><span class="o">.</span><span class="n">imgmsg_to_cv2</span><span class="p">(</span><span class="n">msg</span><span class="p">,</span> <span class="s2">&quot;bgr8&quot;</span><span class="p">)</span>
+        <span class="c1"># Getting the markers from aruco</span>
+        <span class="n">corners</span><span class="p">,</span> <span class="n">ids</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">aruco</span><span class="o">.</span><span class="n">detectMarkers</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aruco_dict</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_aruco_params</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Adding all the new detected ids to the set</span>
+        <span class="k">for</span> <span class="n">_id</span> <span class="ow">in</span> <span class="n">ids</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span> <span class="p">:</span>
+            <span class="c1"># Check if the marker id was already validated</span>
+            <span class="k">if</span> <span class="n">_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validated_markers</span> <span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># Check if the marker was already detected</span>
+            <span class="k">if</span> <span class="n">_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detected_markers</span> <span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># A new marker has been found</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_detected_markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] New marker with id &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot; detected!&quot;</span><span class="p">)</span></div>
+    
+
+<div class="viewcode-block" id="MarkerDetector._retrieve_rooms_information"><a class="viewcode-back" href="../../index.html#scripts.marker_detector.MarkerDetector._retrieve_rooms_information">[docs]</a>    <span class="k">def</span> <span class="nf">_retrieve_rooms_information</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        This method is called when new ArUco markers ids are detected and</span>
+<span class="sd">        the related information needs to be obtained. In order to do this,</span>
+<span class="sd">        it calls the /room_info service for each detected id.</span>
+<span class="sd">        If the id, was valid, adds the information to the OntologyMap</span>
+<span class="sd">        message, adds the id to the list of &quot;validated markers&quot;.</span>
+<span class="sd">        Finally, it clears the list of detected markers.</span>
+<span class="sd">        &#39;&#39;&#39;</span>
+        <span class="c1"># Waiting for the service to be available</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] Waiting for MarkerServer Service...&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_room_info_srv</span><span class="o">.</span><span class="n">wait_for_service</span><span class="p">()</span>
+        <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] MarkerServer Service found!&quot;</span><span class="p">)</span>
+        <span class="c1"># Creating a new room information message</span>
+        <span class="n">room_info_msg</span> <span class="o">=</span> <span class="n">RoomInformation</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_detected_markers</span> <span class="p">:</span>
+            <span class="c1"># Requesting information to the room service</span>
+            <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] Requesting info for ID &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">_id</span><span class="p">))</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_room_info_srv</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span>
+            <span class="c1"># Check if the id was valid</span>
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">room</span> <span class="o">==</span> <span class="s2">&quot;no room associated with this marker id&quot;</span><span class="p">:</span>
+                <span class="n">rospy</span><span class="o">.</span><span class="n">loginfo</span><span class="p">(</span><span class="s2">&quot;[MARKER DETECTOR] Detected marker with invalid ID &quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span><span class="o">+</span><span class="s2">&quot;, ignoring&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="c1"># Storing the room name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_onto_map_msg</span><span class="o">.</span><span class="n">rooms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">room</span><span class="p">)</span>
+            <span class="c1"># Storing the room positions</span>
+            <span class="n">point</span> <span class="o">=</span> <span class="n">Point</span><span class="p">()</span>
+            <span class="n">point</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">x</span>
+            <span class="n">point</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">y</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_onto_map_msg</span><span class="o">.</span><span class="n">positions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+            <span class="c1"># Storing the room connections</span>
+            <span class="n">room_doors</span> <span class="o">=</span> <span class="n">RoomDoors</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">connection</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">connections</span> <span class="p">:</span>
+                <span class="n">room_doors</span><span class="o">.</span><span class="n">doors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">connection</span><span class="o">.</span><span class="n">through_door</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_onto_map_msg</span><span class="o">.</span><span class="n">doors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">room_doors</span><span class="p">)</span>
+            <span class="c1"># The marker has been parsed as valid</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validated_markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">_id</span><span class="p">)</span>
+        <span class="c1"># The detected markers have been handled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_detected_markers</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">MarkerDetector</span><span class="p">()</span>
+    <span class="n">rospy</span><span class="o">.</span><span class="n">spin</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Mattia Musumeci.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
