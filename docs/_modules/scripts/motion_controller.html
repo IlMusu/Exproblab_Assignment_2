@@ -174,7 +174,7 @@
             <span class="c1"># Sending the goal to the move_base server.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_move_acl</span><span class="o">.</span><span class="n">send_goal</span><span class="p">(</span><span class="n">goal</span><span class="p">)</span>
             <span class="c1"># Waiting until the robot is arrived at destination.</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until_robot_at_goal</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_wait_until_robot_at_pose</span><span class="p">(</span><span class="n">pose</span><span class="p">)</span>
                 
             <span class="c1"># Canceling the goal if not completed.</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_move_acl</span><span class="o">.</span><span class="n">simple_state</span> <span class="o">!=</span> <span class="n">SimpleGoalState</span><span class="o">.</span><span class="n">DONE</span><span class="p">:</span>
@@ -195,8 +195,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_follow_asv</span><span class="o">.</span><span class="n">set_aborted</span><span class="p">(</span><span class="n">result</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="MotionController._wait_until_robot_at_goal"><a class="viewcode-back" href="../../index.html#scripts.motion_controller.MotionController._wait_until_robot_at_goal">[docs]</a>    <span class="k">def</span> <span class="nf">_wait_until_robot_at_goal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MotionController._wait_until_robot_at_pose"><a class="viewcode-back" href="../../index.html#scripts.motion_controller.MotionController._wait_until_robot_at_pose">[docs]</a>    <span class="k">def</span> <span class="nf">_wait_until_robot_at_pose</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">        Args:</span>
+<span class="sd">            pose (Point): the pose position.</span>
+<span class="sd">        </span>
 <span class="sd">        This function blocks the execution until the robot is arrived at destination</span>
 <span class="sd">        which might happen because of two reasons: the first one is that move_base</span>
 <span class="sd">        completes the execution of the action, the second one is because the distance</span>
@@ -216,15 +219,15 @@
 
 
     
-<div class="viewcode-block" id="MotionController._compute_robot_distance"><a class="viewcode-back" href="../../index.html#scripts.motion_controller.MotionController._compute_robot_distance">[docs]</a>    <span class="k">def</span> <span class="nf">_compute_robot_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">goal</span><span class="p">):</span>
+<div class="viewcode-block" id="MotionController._compute_robot_distance"><a class="viewcode-back" href="../../index.html#scripts.motion_controller.MotionController._compute_robot_distance">[docs]</a>    <span class="k">def</span> <span class="nf">_compute_robot_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pose</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Args:</span>
-<span class="sd">            goal (Point) : the goal position.</span>
+<span class="sd">            pose (Point) : the goal position.</span>
 <span class="sd">        </span>
 <span class="sd">        Computes the distance between the robot and the goal.</span>
 <span class="sd">        &#39;&#39;&#39;</span>
-        <span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_position</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">goal</span><span class="o">.</span><span class="n">x</span>
-        <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_position</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">goal</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_position</span><span class="o">.</span><span class="n">x</span><span class="o">-</span><span class="n">pose</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">dy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_robot_position</span><span class="o">.</span><span class="n">y</span><span class="o">-</span><span class="n">pose</span><span class="o">.</span><span class="n">y</span>
         <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dx</span><span class="o">*</span><span class="n">dx</span> <span class="o">+</span> <span class="n">dy</span><span class="o">*</span><span class="n">dy</span><span class="p">)</span></div></div>
 
 

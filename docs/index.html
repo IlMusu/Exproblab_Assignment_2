@@ -65,7 +65,7 @@
 <li><a class="reference internal" href="#scripts.motion_controller.MotionController._compute_robot_distance"><code class="docutils literal notranslate"><span class="pre">MotionController._compute_robot_distance()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.motion_controller.MotionController._follow_path"><code class="docutils literal notranslate"><span class="pre">MotionController._follow_path()</span></code></a></li>
 <li><a class="reference internal" href="#scripts.motion_controller.MotionController._on_odom_callback"><code class="docutils literal notranslate"><span class="pre">MotionController._on_odom_callback()</span></code></a></li>
-<li><a class="reference internal" href="#scripts.motion_controller.MotionController._wait_until_robot_at_goal"><code class="docutils literal notranslate"><span class="pre">MotionController._wait_until_robot_at_goal()</span></code></a></li>
+<li><a class="reference internal" href="#scripts.motion_controller.MotionController._wait_until_robot_at_pose"><code class="docutils literal notranslate"><span class="pre">MotionController._wait_until_robot_at_pose()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -310,10 +310,10 @@ under the user defined threshold.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="scripts.motion_controller.MotionController._compute_robot_distance">
-<span class="sig-name descname"><span class="pre">_compute_robot_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">goal</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController._compute_robot_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController._compute_robot_distance" title="Permalink to this definition"></a></dt>
+<span class="sig-name descname"><span class="pre">_compute_robot_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pose</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController._compute_robot_distance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController._compute_robot_distance" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>goal</strong> (<em>Point</em>) – the goal position.</p>
+<dd class="field-odd"><p><strong>pose</strong> (<em>Point</em>) – the goal position.</p>
 </dd>
 </dl>
 <p>Computes the distance between the robot and the goal.</p>
@@ -353,9 +353,14 @@ current position of the robot which is stored to be used later.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="scripts.motion_controller.MotionController._wait_until_robot_at_goal">
-<span class="sig-name descname"><span class="pre">_wait_until_robot_at_goal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController._wait_until_robot_at_goal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController._wait_until_robot_at_goal" title="Permalink to this definition"></a></dt>
-<dd><p>This function blocks the execution until the robot is arrived at destination
+<dt class="sig sig-object py" id="scripts.motion_controller.MotionController._wait_until_robot_at_pose">
+<span class="sig-name descname"><span class="pre">_wait_until_robot_at_pose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pose</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/motion_controller.html#MotionController._wait_until_robot_at_pose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.motion_controller.MotionController._wait_until_robot_at_pose" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pose</strong> (<em>Point</em>) – the pose position.</p>
+</dd>
+</dl>
+<p>This function blocks the execution until the robot is arrived at destination
 which might happen because of two reasons: the first one is that move_base
 completes the execution of the action, the second one is because the distance
 between the robot and the goal is less than the /goal_threshold parameter.</p>
