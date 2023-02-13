@@ -83,11 +83,13 @@ class RobotInspectionRoutine():
         self._rotate_arm_joint_at(self._joint1_pub, 0.0)
         self._rotate_arm_joint_smoothly(self._joint0_pub, 0.1, 0.0, -3.1)
         # Rotate camera down and 360 deg
-        self._rotate_arm_joint_at(self._joint2_pub, 0.3)
+        self._rotate_arm_joint_at(self._joint2_pub, 0.25)
         self._rotate_arm_joint_smoothly(self._joint0_pub, 0.1, -3.1, 3.1)
+        rospy.sleep(rospy.Duration(0.5))
         # Rotate camera a little up and -360 deg
-        self._rotate_arm_joint_at(self._joint2_pub, -0.65)
+        self._rotate_arm_joint_at(self._joint2_pub, -0.7)
         self._rotate_arm_joint_smoothly(self._joint0_pub, 0.1, 3.1, -3.1)
+        rospy.sleep(rospy.Duration(0.5))
         # Returning to the initial position
         self._rotate_arm_joint_at(self._joint2_pub, 0.0)
         self._rotate_arm_joint_smoothly(self._joint0_pub, 0.1, -3.1, 0.0)

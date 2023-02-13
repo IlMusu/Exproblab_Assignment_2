@@ -99,15 +99,12 @@ include_directories(
 
 ## Declare a C++ executable
 add_executable(marker_server src/marker_server.cpp)
-add_executable(marker_detector src/marker_detector.cpp)
 
 ## Add cmake target dependencies of the executable
 add_dependencies(marker_server ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(marker_detector ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(marker_server ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
-target_link_libraries(marker_detector ${catkin_LIBRARIES} ${OpenCV_LIBRARIES})
 
 #############
 ## Install ##
