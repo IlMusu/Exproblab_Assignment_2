@@ -16,22 +16,22 @@ from nav_msgs.msg import Odometry
 
 class MotionController():
     '''
-    Creates an action client for:
+    Creates action clients for:
         - /move_base (MoveBaseAction)
-    Creates an action server for:
+    Creates action servers for:
         - /follow_path (FollowPathAction)
     Subscribes to topics:
         - /odom (Odometry)
     ROS Parameters :
-        - /goal_threshold (float) : The distance from goal at which the robot is
-            considered to be arrived at goal.
+        - /goal_threshold (float) : The distance from goal at which the 
+            robot is considered to be arrived at goal.
     
-    This Ros Node makes the robot follow a path composed by waypoints.
-    The actual movements between the waypoints is perfomed through move_base.
-    Sometimes the robot gets stuck just before reaching the requested goal,
-    because of this reason, this node checks the distance from the robot and
-    the current goal position and interrupts move_base when the distance is
-    under the user defined threshold.
+    This ROS node makes the robot follow a path composed of waypoints. 
+    The actual movements between waypoints are performed using move_base. 
+    Sometimes the robot gets stuck just before reaching the desired goal. 
+    To address this, the node checks the distance between the robot and 
+    the current goal position and interrupts move_base when the distance 
+    is below the user-defined threshold.
     '''
     def __init__(self):
         '''
@@ -80,13 +80,13 @@ class MotionController():
         Args:
             action (FollowPathGoal) : the requested path to follow.
         
-        | This is the callback for the /follow_path action server:
-        | 1. Waits until the move_base action server is available.
-        | 2. For each waypoint inside the requested path:
-        |  3. Creates a MoveBaseAction containing the waypoint as goal.
-        |  4. Sends the goal the move_base action server.
-        |  5. Waits until the robot is arried at the waypoint.
-        | 6. Creates and publishes the results.
+        This is the callback for the /follow_path action server.
+        First, it waits until the move_base action server is ready. 
+        Then, for each waypoint in the requested path, it creates a 
+        MoveBaseAction with the waypoint as the goal. The goal is 
+        sent to the move_base action server and it waits until the
+        robot arrives at the waypoint. Finally, the results containing
+        the current robot position are created and published.
         '''
         # Waiting until move_base exists.
         self._move_acl.wait_for_server()

@@ -124,11 +124,11 @@ class OntologyMapBuilder(object):
             rooms_doors (list) : At index i, the list of doors belonging to room i.
             rooms_positions (list) : At index i, the position of room i.
         
-        |  This method creates the map specified by the user:
-        |  1. Loads the default ontology into the ARMOR server.
-        |  2. Decodes the description of the map and builds it.
-        |  3. Disjoints the necessary individuals on the ontology
-        |  4. Organizes the rooms positions into a map.
+        This method builds the ontology from the parameters.
+        First, it loads the default ontology into the ARMOR server. 
+        Then, it decodes the description of the map and builds it. 
+        Next, it separates the necessary individuals in the ontology. 
+        Finally, it arranges the positions of the rooms into a map.
         '''
         # Check if the map is already build
         if self._building_complete :

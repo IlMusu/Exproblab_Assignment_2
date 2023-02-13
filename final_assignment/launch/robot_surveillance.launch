@@ -8,7 +8,9 @@
     <node pkg="final_assignment" name="robot_inspection_routine"  type="robot_inspection_routine.py" output="screen" />
     
     <!-- Launching node for decting markers -->
-    <node pkg="final_assignment" name="marker_detector" type="marker_detector.py" output="screen" />
+    <node pkg="final_assignment" name="marker_detector" type="marker_detector.py" output="screen" >
+        <param name="markers_count" type="int" value="7" />
+    </node>
     
     <!-- Launching node for planning -->
     <node pkg="final_assignment" name="planner_controller" type="planner_controller.py" output="screen" />

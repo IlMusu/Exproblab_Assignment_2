@@ -19,8 +19,39 @@ from final_assignment.msg import RobotInspectionRoutineAction, RobotInspectionRo
 
 
 class MarkerDetector():
-
+    '''
+    Subscribes to topics:
+        - /camera/image_raw (Image)
+    Publishes to topics:
+        - /cmd_vel (Twist)
+        - /ontology_map/build_map (OntologyMap)
+    Requires services on:
+        - /room_info (RoomInformation)
+    Creates action clients for:
+        - /robot_inspection_routine (RobotInspectionRoutine)
+    ROS Parameters :
+        - /markers_count (int) : The number of markers to detect.
+    
+    This ROS node makes the robot detect the specified number of ArUco 
+    markers that are located around it. To accomplish this, it sends a 
+    goal to the /robot_inspection_routine action server, which causes 
+    the robot arm to rotate in circular patterns. Once the inspection 
+    routine is completed, it obtains information about the markers that 
+    it has detected using the /room_info service. These steps are 
+    repeated until all markers have been detected. Finally, it computes 
+    a new OntologyMap message containing all the necessary information 
+    about the ontology and publishes it.
+    '''
     def __init__(self):
+        '''
+        |  In the constructor method, this class:
+        |  1. Creates a subscriber for the "/camera/image_raw" topic.
+        |  2. Creates a publisher for the "/cmd_vel" topic.
+        |  3. Creates a publisher for the "/ontology_map/build_map/" topic.
+        |  4. Creates a service client for the "/room_info" service.
+        |  5. Creates an action client for the "/robot_inspection_routine" action.
+        |  6. Finally, it starts to look for ArUco markers.
+        '''
         # Initializing ROS Node
         rospy.init_node("marker_detector")
         # Initializing variables
@@ -30,7 +61,7 @@ class MarkerDetector():
         self._detected_markers = []
         self._validated_markers = []
         self._onto_map_msg = OntologyMap()
-        self._markers_count = rospy.get_param("~markers_count", 7)
+        self._markers_count = rospy.get_param("~markers_count")
         # Creating a Subscriber for the image topic
         self._image_sub = rospy.Subscriber(
             "/camera/image_raw", Image, queue_size=100, 
@@ -52,18 +83,28 @@ class MarkerDetector():
         self._arm_acl = actionlib.SimpleActionClient(
             "/robot_inspection_routine", RobotInspectionRoutineAction
         )
+        # Starting to look for aruco markers
         self._look_for_aruco_markers()
 
 
     def _look_for_aruco_markers(self):
-        # Waiting for the server to be available
-        rospy.loginfo("[MARKER DETECTOR] Waiting for InspectionRoutine Server...")
-        self._arm_acl.wait_for_server()
-        rospy.loginfo("[MARKER DETECTOR] InspectionRoutine Server found!")
+        '''
+        This method is used for detecting ArUco markers. It starts by setting a 
+        low velocity for the robot so that it remains stationary while searching 
+        for markers. After the /robot_inspection_routine action server is detected
+        and until all the markers are correctly detected, a goal is sent to it, 
+        and the completion is awaited. When all the markers are correctly detected, 
+        a new message is published on the /ontology_map/build_map channel with 
+        information about the ontology.
+        '''
         # Setting the robot velocity very small in order to keep it still
         vel_msg = Twist()
         vel_msg.linear.x = 0.001
         self._vel_pub.publish(vel_msg)
+        # Waiting for the server to be available
+        rospy.loginfo("[MARKER DETECTOR] Waiting for InspectionRoutine Server...")
+        self._arm_acl.wait_for_server()
+        rospy.loginfo("[MARKER DETECTOR] InspectionRoutine Server found!")
         # Finding all the markers in the room
         while len(self._validated_markers) < self._markers_count :
             # Creating a goal for the movement of the arm
@@ -87,6 +128,13 @@ class MarkerDetector():
 
 
     def _image_callback(self, msg):
+        '''
+        This is the callback for the /camera/image_raw topic.
+        When a new image message is available, this method encodes it using cv_bridge.
+        Then, dectects any eventual the ArUco markers in the image using the
+        apposite function. The dected markers id are not ignored if there are not
+        already validated or are not already found.
+        '''
         # Encoding the image using cv
         image = self._cv_bridge.imgmsg_to_cv2(msg, "bgr8")
         # Getting the markers from aruco
@@ -107,6 +155,14 @@ class MarkerDetector():
     
 
     def _retrieve_rooms_information(self):
+        '''
+        This method is called when new ArUco markers ids are detected and
+        the related information needs to be obtained. In order to do this,
+        it calls the /room_info service for each detected id.
+        If the id, was valid, adds the information to the OntologyMap
+        message, adds the id to the list of "validated markers".
+        Finally, it clears the list of detected markers.
+        '''
         # Waiting for the service to be available
         rospy.loginfo("[MARKER DETECTOR] Waiting for MarkerServer Service...")
         self._room_info_srv.wait_for_service()

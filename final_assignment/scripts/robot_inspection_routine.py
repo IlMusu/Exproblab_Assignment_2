@@ -15,7 +15,7 @@ class RobotInspectionRoutine():
         - /joint0_position_controller/command (Float64)
         - /joint1_position_controller/command (Float64)
         - /camera_position_controller/command (Float64)
-    Creates an action server for:
+    Creates action servers for:
         - /robot_inspection_routine (RobotInspectionRoutineAction)
     
     This ROS Node makes the arm of the robot rotate in circular patters.
@@ -61,13 +61,13 @@ class RobotInspectionRoutine():
         | This is the callback for the /robot_inspection_routine action server:
         | 1. If the routine is already taking place:
         |  2. Sends the result as failed.
-        | 2. Makes the first joint rotate to -pi.
-        | 3. Makes the camera joint to 0.3.
-        | 4. Makes the first joint rotate to pi.
-        | 5. Makes the camera rotate to -0.8.
-        | 6. Makes the first joint rotate to -pi.
-        | 7. Resets the joint positions.
-        | 8. Sends the result as success.
+        | 3. Makes the first joint rotate to -pi.
+        | 4. Makes the camera joint to 0.3.
+        | 5. Makes the first joint rotate to pi.
+        | 6. Makes the camera rotate to -0.8.
+        | 7. Makes the first joint rotate to -pi.
+        | 8. Resets the joint positions.
+        | 9. Sends the result as success.
         '''
         # Check if the robot is already inspecting
         if self._is_inspecting :

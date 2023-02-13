@@ -9,7 +9,7 @@ from geometry_msgs.msg import Point
 
 class PlannerController():
     '''
-    Creates an action server for:
+    Creates action servers for:
         - /compute_path (ComputePathAction)
     
     This ROS Node creates a plan composed by waypoints that the robot has
@@ -19,7 +19,7 @@ class PlannerController():
     def __init__(self):
         '''
         |  In the constructor method, this class:
-        |  1. Creates the /planner_controller action server.
+        |  1. Creates the "/planner_controller" action server.
         |  2. Starts the server.
         '''
         # Creating a ROS Node.
