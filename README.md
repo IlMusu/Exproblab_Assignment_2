@@ -167,6 +167,9 @@ The `ontology_map_builder` node uses the following parameters:
 The `motion_controller` node uses the following parameters:  
 - /goal_threshold (float) : The distance from goal at which the robot is considered to be arrived at goal.
 
+The `marker_detector` node uses the following parameters:  
+- /markers_count (int) : The number of markers to detect.
+
 ## 4. RUNNING CODE
 ### Detecting The Markers
 <p align="center">
